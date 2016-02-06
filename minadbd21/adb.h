@@ -244,6 +244,9 @@ void   kick_transport( atransport*  t );
 #if ADB_HOST
 int get_available_local_transport_index();
 #endif
+#ifdef TW_IP_SIDELOAD
+int  init_socket_transport(atransport *t, int s, int port, int local);
+#endif
 void init_usb_transport(atransport *t, usb_handle *usb, int state);
 
 /* for MacOS X cleanup */
