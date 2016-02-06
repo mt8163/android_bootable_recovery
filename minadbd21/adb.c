@@ -395,6 +395,18 @@ int adb_main(const char* path)
         usb_init();
     }
 
+#ifdef TW_IP_SIDELOAD
+    // Well not really, listen for network connections too.
+    char value[PROPERTY_VALUE_MAX];
+    int port;
+    property_get("service.adb.tcp.port", value, "");
+    if (sscanf(value, "%d", &port) == 1 && port > 0) {
+        printf("using port=%d\n", port);
+        // listen on TCP port specified by service.adb.tcp.port property
+        local_init(port);
+    }
+#endif
+
 /* Remove this so that perms work properly
     if (setgid(AID_SHELL) != 0) {
         fprintf(stderr, "failed to setgid to shell\n");

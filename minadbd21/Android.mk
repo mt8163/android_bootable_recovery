@@ -28,4 +28,12 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := libminadbd
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../
 LOCAL_SHARED_LIBRARIES := libfusesideload libcutils libc
+
+
+ifeq ($(TW_IP_SIDELOAD), true)
+    LOCAL_SRC_FILES += transport_local.c
+    LOCAL_CFLAGS += -DTW_IP_SIDELOAD
+endif
+
+
 include $(BUILD_SHARED_LIBRARY)
