@@ -75,6 +75,7 @@ LOCAL_SRC_FILES := \
     twrpDigestDriver.cpp \
     openrecoveryscript.cpp \
     tarWrite.c \
+    amonet.cpp \
     twrpAdbBuFifo.cpp
 
 ifneq ($(TARGET_RECOVERY_REBOOT_SRC),)
