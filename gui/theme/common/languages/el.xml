@@ -272,6 +272,7 @@
         <string name="rb_poweroff_btn">Απενεργοποίηση</string>
         <string name="rb_recovery_btn">Recovery</string>
         <string name="rb_bootloader_btn">Bootloader</string>
+	<string name="rb_hacked_bl_btn">Hacked BL</string>
         <string name="rb_download_btn">Λήψη</string>
 		<string name="rb_edl_btn">Edl</string>
         <string name="turning_off">Απενεργοποίηση...</string>

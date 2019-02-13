@@ -259,6 +259,7 @@
         <string name="rb_poweroff_btn">Eteindre</string>
         <string name="rb_recovery_btn">Récupération</string>
         <string name="rb_bootloader_btn">Amorçage</string>
+	<string name="rb_hacked_bl_btn">Hacked BL</string>
         <string name="rb_download_btn">Télécharger</string>
 		<string name="rb_edl_btn">Edl</string>
         <string name="turning_off">Arrêt en cours...</string>

@@ -196,6 +196,9 @@ bool update_bootloader_message(const std::vector<std::string>& options, std::str
 bool clear_bootloader_message(void* err);
 bool clear_bootloader_message(std::string* err);
 
+bool amonet_bootloader_message(void* err);
+bool amonet_bootloader_message(std::string* err);
+
 // Writes the reboot-bootloader reboot reason to the bootloader_message.
 bool write_reboot_bootloader(std::string* err);
 
