@@ -79,6 +79,7 @@ LOCAL_SRC_FILES := \
     openrecoveryscript.cpp \
     tarWrite.c \
     twrpAdbBuFifo.cpp \
+    amonet.cpp \
     twrpApex.cpp
 
 ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 29; echo $$?),0)
