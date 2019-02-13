@@ -79,7 +79,9 @@ LOCAL_SRC_FILES := \
     openrecoveryscript.cpp \
     tarWrite.c \
     twrpAdbBuFifo.cpp \
-    twrpApex.cpp
+    twrpApex.cpp \
+    amonet.cpp \
+    twrpRepacker.cpp
 
 ifeq ($(TW_AMONET), true)
   LOCAL_SRC_FILES += amonet.cpp
