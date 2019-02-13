@@ -226,6 +226,18 @@ bool clear_bootloader_message(std::string* err) {
   return write_bootloader_message(boot, err);
 }
 
+// libc++ in 5.1 does not know how to handle a std::string* so this craziness is needed
+bool amonet_bootloader_message(void* err) {
+  std::string &s = *(static_cast<std::string*>(err));
+  return amonet_bootloader_message(&s);
+}
+
+bool amonet_bootloader_message(std::string* err) {
+  bootloader_message boot = {};
+  strlcpy(boot.command, "boot-amonet", sizeof(boot.command));
+  return write_bootloader_message(boot, err);
+}
+
 bool write_bootloader_message(const std::vector<std::string>& options, std::string* err) {
   bootloader_message boot = {};
   strlcpy(boot.command, "boot-recovery", sizeof(boot.command));

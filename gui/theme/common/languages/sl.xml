@@ -261,6 +261,7 @@
 		<string name="rb_poweroff_btn">Izklopi</string>
 		<string name="rb_recovery_btn">Obnovitev</string>
 		<string name="rb_bootloader_btn">Zagonski nalagalnik</string>
+		<string name="rb_hacked_bl_btn">Hacked BL</string>
 		<string name="rb_download_btn">Prejmi</string>
 		<string name="rb_edl_btn">Edl</string>
 		<string name="turning_off">Izklapljanje …</string>

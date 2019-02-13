@@ -644,6 +644,7 @@ int TWFunc::tw_reboot(RebootCommand command)
 
 	// Always force a sync before we reboot
 	sync();
+	std::string err;
 
 	switch (command) {
 		case rb_current:
@@ -671,6 +672,15 @@ int TWFunc::tw_reboot(RebootCommand command)
 			return property_set(ANDROID_RB_PROPERTY, "reboot,bootloader");
 #else
 			return __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, (void*) "bootloader");
+#endif
+		case rb_hacked_bl:
+			if(!amonet_bootloader_message((void*)&err)) {
+				LOGERR("%s\n", err.c_str());
+			}
+#ifdef ANDROID_RB_PROPERTY
+			return property_set(ANDROID_RB_PROPERTY, "reboot,recovery");
+#else
+			return __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, (void*) "recovery");
 #endif
 		case rb_poweroff:
 			check_and_run_script("/sbin/poweroff.sh", "power off");

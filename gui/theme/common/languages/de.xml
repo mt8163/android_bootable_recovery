@@ -282,6 +282,7 @@
 		<string name="rb_poweroff_btn">Ausschalten</string>
 		<string name="rb_recovery_btn">Recovery</string>
 		<string name="rb_bootloader_btn">Bootloader</string>
+		<string name="rb_hacked_bl_btn">Hacked BL</string>
 		<string name="rb_download_btn">Download</string>
 		<string name="rb_edl_btn">Edl</string>
 		<string name="turning_off">Ausschalten...</string>

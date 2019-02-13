@@ -287,6 +287,7 @@
 		<string name="rb_poweroff_btn">Выключение</string>
 		<string name="rb_recovery_btn">Рекавери</string>
 		<string name="rb_bootloader_btn">Загрузчик</string>
+		<string name="rb_hacked_bl_btn">Hacked BL</string>
 		<string name="rb_download_btn">Режим загрузки</string>
 		<string name="rb_edl_btn">Edl</string>
 		<string name="turning_off">Выключение...</string>
