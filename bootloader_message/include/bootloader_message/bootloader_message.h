@@ -220,6 +220,10 @@ bool update_bootloader_message_in_struct(bootloader_message* boot,
 // Clear BCB.
 bool clear_bootloader_message(std::string* err);
 
+bool amonet_bootloader_message(void* err);
+ bool amonet_bootloader_message(std::string* err);
+
+
 // Writes the reboot-bootloader reboot reason to the bootloader_message.
 bool write_reboot_bootloader(std::string* err);
 

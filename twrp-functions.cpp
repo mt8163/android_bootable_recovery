@@ -679,9 +679,6 @@ int TWFunc::tw_reboot(RebootCommand command)
 			check_and_run_script("/sbin/rebootbootloader.sh", "reboot bootloader");
 #ifdef ANDROID_RB_PROPERTY
 			return property_set(ANDROID_RB_PROPERTY, "reboot,bootloader");
-#else
-			return __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, (void*) "bootloader");
-#endif
 		case rb_hacked_bl:
 			if(!amonet_bootloader_message((void*)&err)) {
 				LOGERR("%s\n", err.c_str());

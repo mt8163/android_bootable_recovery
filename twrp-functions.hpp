@@ -43,6 +43,7 @@ typedef enum
 	rb_bootloader,     // May also be fastboot
 	rb_download,
 	rb_edl,
+	rb_fastboot
 	rb_hacked_bl,
 } RebootCommand;
 

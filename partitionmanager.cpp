@@ -2668,12 +2668,8 @@ bool TWPartitionManager::Flash_Image(string& path, string& filename) {
 		return false;
 	}
 	gui_highlight("flash_done=IMAGE FLASH COMPLETED]");
-#ifdef TW_AMONET
-	if (patch_part("/boot") < 0)
+	if (repatch() < 0)
 		return false;
-	if (patch_part("/recovery") < 0)
-		return false;
-#endif
 	return true;
 }
 

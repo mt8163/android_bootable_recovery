@@ -490,6 +490,8 @@ int main(int argc, char **argv) {
 		TWFunc::tw_reboot(rb_download);
 	else if (Reboot_Arg == "edl")
 		TWFunc::tw_reboot(rb_edl);
+	else if (Reboot_Arg == "fastboot")
+		TWFunc::tw_reboot(rb_fastboot);
 	else if (Reboot_Arg == "hacked_bl")
 		TWFunc::tw_reboot(rb_hacked_bl);
 	else
