@@ -310,12 +310,6 @@ endif
 ifeq ($(TW_AMONET), true)
     LOCAL_CFLAGS += -DTW_AMONET
 endif
-ifeq ($(TW_HACKED_BL_BUTTON), true)
-    LOCAL_CFLAGS += -DTW_HACKED_BL_BUTTON
-endif
-ifeq ($(TW_BOOT_MENU), true)
-    LOCAL_CFLAGS += -DTW_BOOT_MENU
-endif
 ifeq ($(TW_NO_REBOOT_RECOVERY), true)
     LOCAL_CFLAGS += -DTW_NO_REBOOT_RECOVERY
 endif

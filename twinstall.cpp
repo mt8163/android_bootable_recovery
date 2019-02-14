@@ -440,6 +440,7 @@ int TWinstall_zip(const char* path, int* wipe_cache, bool check_for_digest) {
 			ret_val = INSTALL_CORRUPT;
 		} else {
 			ret_val = Prepare_Update_Binary(path, &Zip, wipe_cache);
+#ifdef TW_AMONET
 			if (ret_val == INSTALL_SUCCESS) {
 				if (unpatch_boot() < 0)
 					ret_val = INSTALL_ERROR;
@@ -448,6 +449,9 @@ int TWinstall_zip(const char* path, int* wipe_cache, bool check_for_digest) {
 				if (repatch() < 0)
 					ret_val = INSTALL_ERROR;
 			}
+#else
+			ret_val = Run_Update_Binary(path, &Zip, wipe_cache, UPDATE_BINARY_ZIP_TYPE);
+#endif
 		}
 	} else {
 		if (Zip.EntryExists(AB_OTA)) {
