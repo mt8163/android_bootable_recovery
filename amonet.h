@@ -1,3 +1,4 @@
+#ifdef TW_AMONET
 #ifndef RECOVERY_AMONET_H_
 #define RECOVERY_AMONET_H_
 
@@ -13,3 +14,4 @@ int unpatch_part(uint8_t part);
 int repatch_part(uint8_t part);
 
 #endif  // RECOVERY_AMONET_H_
+#endif // TW_AMONET

@@ -684,11 +684,11 @@ void DataManager::SetDefaultValues()
 #else
 	mConst.SetValue(TW_REBOOT_BOOTLOADER, "1");
 #endif
-#ifdef TW_NO_REBOOT_HACKED_BL
+#ifdef TW_AMONET
 	printf("TW_NO_REBOOT_HACKED_BL := true\n");
-	mConst.SetValue(TW_REBOOT_HACKED_BL, "0");
-#else
 	mConst.SetValue(TW_REBOOT_HACKED_BL, "1");
+#else
+	mConst.SetValue(TW_REBOOT_HACKED_BL, "0");
 #endif
 #ifdef RECOVERY_SDCARD_ON_DATA
 	printf("RECOVERY_SDCARD_ON_DATA := true\n");
