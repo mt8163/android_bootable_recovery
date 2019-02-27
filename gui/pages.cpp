@@ -292,17 +292,20 @@ Page::Page(xml_node<>* page, std::vector<xml_node<>*> *templates)
 {
 	mTouchStart = NULL;
 
+#ifndef TW_NO_SCREEN
 	// We can memset the whole structure, because the alpha channel is ignored
 	memset(&mBackground, 0, sizeof(COLOR));
-
+#endif
 	// With NULL, we make a console-only display
 	if (!page)
 	{
+#ifndef TW_NO_SCREEN
 		mName = "console";
 
 		GUIConsole* element = new GUIConsole(NULL);
 		mRenders.push_back(element);
 		mActions.push_back(element);
+#endif
 		return;
 	}
 
@@ -339,7 +342,9 @@ bool Page::ProcessNode(xml_node<>* page, std::vector<xml_node<>*> *templates, in
 		std::string type = child->name();
 
 		if (type == "background") {
+#ifndef TW_NO_SCREEN
 			mBackground = LoadAttrColor(child, "color", COLOR(0,0,0,0));
+#endif
 			continue;
 		}
 
@@ -351,11 +356,14 @@ bool Page::ProcessNode(xml_node<>* page, std::vector<xml_node<>*> *templates, in
 
 		if (type == "text")
 		{
+#ifndef TW_NO_SCREEN
 			GUIText* element = new GUIText(child);
 			mObjects.push_back(element);
 			mRenders.push_back(element);
 			mActions.push_back(element);
+#endif
 		}
+#ifndef TW_NO_SCREEN
 		else if (type == "image")
 		{
 			GUIImage* element = new GUIImage(child);
@@ -368,12 +376,14 @@ bool Page::ProcessNode(xml_node<>* page, std::vector<xml_node<>*> *templates, in
 			mObjects.push_back(element);
 			mRenders.push_back(element);
 		}
+#endif
 		else if (type == "action")
 		{
 			GUIAction* element = new GUIAction(child);
 			mObjects.push_back(element);
 			mActions.push_back(element);
 		}
+#ifndef TW_NO_SCREEN
 		else if (type == "console")
 		{
 			GUIConsole* element = new GUIConsole(child);
@@ -518,6 +528,7 @@ bool Page::ProcessNode(xml_node<>* page, std::vector<xml_node<>*> *templates, in
 				}
 			}
 		}
+#endif
 		else
 		{
 			LOGERR("Unknown object type: %s.\n", type.c_str());
@@ -528,9 +539,12 @@ bool Page::ProcessNode(xml_node<>* page, std::vector<xml_node<>*> *templates, in
 
 int Page::Render(void)
 {
+
+#ifndef TW_NO_SCREEN
 	// Render background
 	gr_color(mBackground.red, mBackground.green, mBackground.blue, mBackground.alpha);
 	gr_fill(0, 0, gr_fb_width(), gr_fb_height());
+#endif
 
 	// Render remaining objects
 	std::vector<RenderObject*>::iterator iter;
@@ -759,6 +773,7 @@ int PageSet::Load(LoadingContext& ctx, const std::string& filename)
 	if (child)
 		LoadVariables(child);
 
+
 	LOGINFO("Loading mouse cursor...\n");
 	child = root->first_node("mousecursor");
 	if (child)
@@ -800,8 +815,10 @@ int PageSet::Load(LoadingContext& ctx, const std::string& filename)
 				return rc;
 
 			include = include->next_sibling("xmlfile");
+
 		}
 	}
+
 
 	return 0;
 }
@@ -878,6 +895,7 @@ int PageSet::LoadDetails(LoadingContext& ctx, xml_node<>* root)
 				gui_print_color("warning", "Stock theme version does not match TWRP version.\n");
 			}
 		}
+
 		xml_node<>* resolution = child->first_node("resolution");
 		if (resolution) {
 			LOGINFO("Checking resolution...\n");
@@ -902,6 +920,7 @@ int PageSet::LoadDetails(LoadingContext& ctx, xml_node<>* root)
 					}
 				}
 #endif
+#ifndef TW_NO_SCREEN
 				if (width != 0 && height != 0) {
 					float scale_w = (((float)gr_fb_width() + (float)tw_w_offset) - ((float)offx * 2.0)) / (float)width;
 					float scale_h = (((float)gr_fb_height() + (float)tw_h_offset) - ((float)offy * 2.0)) / (float)height;
@@ -917,6 +936,7 @@ int PageSet::LoadDetails(LoadingContext& ctx, xml_node<>* root)
 						set_scale_values(scale_w, scale_h);
 					}
 				}
+#endif
 			} else {
 				LOGINFO("XML does not contain width and height, no scaling will be applied\n");
 			}
@@ -1642,15 +1662,23 @@ xml_node<>* PageManager::FindStyle(std::string name)
 
 MouseCursor *PageManager::GetMouseCursor()
 {
+#ifndef TW_NO_SCREEN
 	if (!mMouseCursor)
 		mMouseCursor = new MouseCursor(gr_fb_width(), gr_fb_height());
+#else
+		mMouseCursor = new MouseCursor(0,0);
+#endif
 	return mMouseCursor;
 }
 
 void PageManager::LoadCursorData(xml_node<>* node)
 {
 	if (!mMouseCursor)
+#ifndef TW_NO_SCREEN
 		mMouseCursor = new MouseCursor(gr_fb_width(), gr_fb_height());
+#else
+		mMouseCursor = new MouseCursor(0, 0);
+#endif
 
 	mMouseCursor->LoadData(node);
 }
