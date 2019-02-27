@@ -138,8 +138,11 @@ int main(int argc, char **argv) {
 	time_t StartupTime = time(NULL);
 	printf("Starting TWRP %s-%s on %s (pid %d)\n", TW_VERSION_STR, TW_GIT_REVISION, ctime(&StartupTime), getpid());
 
+<<<<<<< HEAD
 	// Load default values to set DataManager constants and handle ifdefs
 	DataManager::SetDefaultValues();
+=======
+>>>>>>> 4bc87490 (Add flag TW_NO_SCREEN to support devices without screen)
 #ifndef TW_NO_SCREEN
 	printf("Starting the UI...\n");
 	gui_init();
@@ -354,6 +357,7 @@ int main(int argc, char **argv) {
 	if (crash_counter == 0)
 		TWFunc::Fixup_Time_On_Boot();
 
+<<<<<<< HEAD
 	// Read the settings file
 	TWFunc::Update_Log_File();
 
@@ -364,6 +368,13 @@ int main(int argc, char **argv) {
 	GUIConsole::Translate_Now();
 #endif
 
+=======
+	DataManager::LoadTWRPFolderInfo();
+	DataManager::ReadSettingsFile();
+#ifndef TW_NO_SCREEN
+	GUIConsole::Translate_Now();
+#endif
+>>>>>>> 4bc87490 (Add flag TW_NO_SCREEN to support devices without screen)
 	// Run any outstanding OpenRecoveryScript
 	std::string cacheDir = TWFunc::get_log_dir();
 	if (cacheDir == DATA_LOGS_DIR)
