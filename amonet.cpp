@@ -3,8 +3,10 @@
 #include <string.h>
 
 #include "amonet.h"
+#include "microloader.h"
 #include "twcommon.h"
 
+<<<<<<< HEAD
 static const char *ford_boot_part = "/dev/block/platform/mtk-msdc.0/by-name/boot";
 static const char *ford_recovery_part = "/dev/block/platform/mtk-msdc.0/by-name/recovery";
 
@@ -97,6 +99,8 @@ static uint8_t microloader_bin[1024] = {
   0x00, 0x00, 0x00, 0x00
 };
 
+=======
+>>>>>>> fa181e68 (Make amonet more generic / Move microloader to device tree)
 int repatch() {
   return repatch_boot() + repatch_recovery();
 }
@@ -122,21 +126,21 @@ int unpatch_part(uint8_t part) {
   uint8_t boot_data[0x800];
   int ret = -1;
 
-  static const char *ford_part;
+  static const char *amonet_part;
   static const char *part_name;
 
   if(part == 1) {
-    ford_part = ford_recovery_part;
+    amonet_part = amonet_recovery_part;
     part_name = "recovery";
   }
   else {
-    ford_part = ford_boot_part;
+    amonet_part = amonet_boot_part;
     part_name = "boot";
   }
   
   gui_print_color("highlight", EXPLOIT_TAG "Remove %s patch...", part_name);
 
-  fp = fopen(ford_part, "r+b");
+  fp = fopen(amonet_part, "r+b");
   if (!fp) {
     gui_print_color("highlight", EXPLOIT_TAG "Failed to open the %s device", part_name);
     goto cleanup;
@@ -186,21 +190,21 @@ int repatch_part(uint8_t part) {
   uint8_t boot_data[0x800];
   int ret = -1;
 
-  static const char *ford_part;
+  static const char *amonet_part;
   static const char *part_name;
 
   if(part == 1) {
-    ford_part = ford_recovery_part;
+    amonet_part = amonet_recovery_part;
     part_name = "recovery";
   }
   else {
-    ford_part = ford_boot_part;
+    amonet_part = amonet_boot_part;
     part_name = "boot";
   }
 
   gui_print_color("highlight", EXPLOIT_TAG "Install %s patch... ", part_name);
 
-  fp = fopen(ford_part, "r+b");
+  fp = fopen(amonet_part, "r+b");
   if (!fp) {
     gui_print_color("highlight", EXPLOIT_TAG "Failed to open the %s device", part_name);
     goto cleanup;
