@@ -78,6 +78,14 @@ LOCAL_SRC_FILES := \
     amonet.cpp \
     twrpAdbBuFifo.cpp
 
+
+ifeq ($(TW_AMONET), true)
+  LOCAL_SRC_FILES += amonet.cpp
+  ifneq ($(TW_AMONET_MICROLOADER_SRC),)
+    LOCAL_SRC_FILES += ../../$(TW_AMONET_MICROLOADER_SRC)
+  endif
+endif
+
 ifneq ($(TARGET_RECOVERY_REBOOT_SRC),)
   LOCAL_SRC_FILES += $(TARGET_RECOVERY_REBOOT_SRC)
 endif
