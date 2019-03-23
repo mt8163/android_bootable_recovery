@@ -79,8 +79,13 @@ LOCAL_SRC_FILES := \
     openrecoveryscript.cpp \
     tarWrite.c \
     twrpAdbBuFifo.cpp \
-    amonet.cpp \
     twrpApex.cpp
+
+ifeq ($(TW_AMONET), true)
+  LOCAL_SRC_FILES += amonet.cpp
+  ifneq ($(TW_AMONET_MICROLOADER_SRC),)
+    LOCAL_SRC_FILES += ../../$(TW_AMONET_MICROLOADER_SRC)
+  endif
 
 ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 29; echo $$?),0)
     LOCAL_STATIC_LIBRARIES += libavb
