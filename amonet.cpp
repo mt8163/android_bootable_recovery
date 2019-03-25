@@ -43,22 +43,22 @@ int unpatch_part(uint8_t part) {
     part_name = "boot";
   }
   
-  gui_print_color("highlight", EXPLOIT_TAG "Remove %s patch...", part_name);
+  gui_print_color("highlight", EXPLOIT_TAG "Remove %s patch...\n", part_name);
 
   fp = fopen(amonet_part, "r+b");
   if (!fp) {
-    gui_print_color("highlight", EXPLOIT_TAG "Failed to open the %s device", part_name);
+    gui_print_color("highlight", EXPLOIT_TAG "Failed to open the %s device\n", part_name);
     goto cleanup;
   }
 
   if (fread(boot_data, sizeof(boot_data), 1, fp) != 1) {
-    gui_print_color("highlight", EXPLOIT_TAG "Failed to read data");
+    gui_print_color("highlight", EXPLOIT_TAG "Failed to read data\n");
     goto cleanup;
   }
 
   if (memcmp(boot_data + 0x400, "ANDROID!", 8) != 0) {
     // Exploit not installed yet, but that's okay
-    gui_print_color("highlight", EXPLOIT_TAG "NOT_INSTALLED");
+    gui_print_color("highlight", EXPLOIT_TAG "NOT_INSTALLED\n");
     ret = 0;
     goto cleanup;
   }
@@ -69,16 +69,16 @@ int unpatch_part(uint8_t part) {
   memset(boot_data + 0x400, 0, 0x400);
 
   if (fseek(fp, 0, SEEK_SET) != 0) {
-    gui_print_color("highlight", EXPLOIT_TAG "Failed to seek");
+    gui_print_color("highlight", EXPLOIT_TAG "Failed to seek\n");
     goto cleanup;
   }
 
   if (fwrite(boot_data, sizeof(boot_data), 1, fp) != 1) {
-    gui_print_color("highlight", EXPLOIT_TAG "Failed to write data");
+    gui_print_color("highlight", EXPLOIT_TAG "Failed to write data\n");
     goto cleanup;
   }
 
-  gui_print_color("highlight", EXPLOIT_TAG "OK");
+  gui_print_color("highlight", EXPLOIT_TAG "OK\n");
   ret = 0;
 
 cleanup:
@@ -107,22 +107,22 @@ int repatch_part(uint8_t part) {
     part_name = "boot";
   }
 
-  gui_print_color("highlight", EXPLOIT_TAG "Install %s patch... ", part_name);
+  gui_print_color("highlight", EXPLOIT_TAG "Install %s patch... \n", part_name);
 
   fp = fopen(amonet_part, "r+b");
   if (!fp) {
-    gui_print_color("highlight", EXPLOIT_TAG "Failed to open the %s device", part_name);
+    gui_print_color("highlight", EXPLOIT_TAG "Failed to open the %s device\n", part_name);
     goto cleanup;
   }
 
   if (fread(boot_data, sizeof(boot_data), 1, fp) != 1) {
-    gui_print_color("highlight", EXPLOIT_TAG "Failed to read data");
+    gui_print_color("highlight", EXPLOIT_TAG "Failed to read data\n");
     goto cleanup;
   }
 
   if (memcmp(boot_data + 0x400, "ANDROID!", 8) == 0) {
     // Exploit not installed yet, but that's okay
-    gui_print_color("highlight", EXPLOIT_TAG "ALREADY_INSTALLED"); // If the rom author injected the boot image herself
+    gui_print_color("highlight", EXPLOIT_TAG "ALREADY_INSTALLED\n"); // If the rom author injected the boot image herself
     ret = 0;
     goto cleanup;
   }
@@ -132,16 +132,16 @@ int repatch_part(uint8_t part) {
   memcpy(boot_data, microloader_bin, 0x400);
 
   if (fseek(fp, 0, SEEK_SET) != 0) {
-    gui_print_color("highlight", EXPLOIT_TAG "Failed to seek");
+    gui_print_color("highlight", EXPLOIT_TAG "Failed to seek\n");
     goto cleanup;
   }
 
   if (fwrite(boot_data, sizeof(boot_data), 1, fp) != 1) {
-    gui_print_color("highlight", EXPLOIT_TAG "Failed to write data");
+    gui_print_color("highlight", EXPLOIT_TAG "Failed to write data\n");
     goto cleanup;
   }
 
-  gui_print_color("highlight", EXPLOIT_TAG "OK");
+  gui_print_color("highlight", EXPLOIT_TAG "OK\n");
   ret = 0;
 
 cleanup:
