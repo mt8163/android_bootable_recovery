@@ -4,9 +4,11 @@
 
 #include <unistd.h>
 
-extern const char *amonet_boot_part;
-extern const char *amonet_recovery_part;
+#ifdef TW_MICROLOADER
 extern uint8_t microloader_bin[1024];
+#else
+uint8_t microloader_bin[1024];
+#endif
 
 #endif // RECOVERY_AMONET_MICROLOADER_H
 #endif // TW_AMONET

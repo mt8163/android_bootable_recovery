@@ -440,11 +440,15 @@ int TWinstall_zip(const char* path, int* wipe_cache) {
 			ret_val = Prepare_Update_Binary(path, &Zip, wipe_cache);
 #ifdef TW_AMONET
 			if (ret_val == INSTALL_SUCCESS) {
-				if (unpatch_boot() < 0)
+				if (load_microloader() < 0)
+					ret_val = INSTALL_ERROR;
+				if (unpatch_part("/boot") < 0)
 					ret_val = INSTALL_ERROR;
 				if (ret_val == INSTALL_SUCCESS)
 					ret_val = Run_Update_Binary(path, &Zip, wipe_cache, UPDATE_BINARY_ZIP_TYPE);
-				if (repatch() < 0)
+				if (patch_part("/boot") < 0)
+					ret_val = INSTALL_ERROR;
+				if (patch_part("/recovery") < 0)
 					ret_val = INSTALL_ERROR;
 			}
 #else
