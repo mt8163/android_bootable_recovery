@@ -122,6 +122,7 @@ ifeq ($(TW_AMONET), true)
   LOCAL_SRC_FILES += amonet.cpp
   ifneq ($(TW_AMONET_MICROLOADER_SRC),)
     LOCAL_SRC_FILES += ../../$(TW_AMONET_MICROLOADER_SRC)
+    LOCAL_CFLAGS += -DTW_MICROLOADER
   endif
 endif
 
