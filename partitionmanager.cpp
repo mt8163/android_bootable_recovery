@@ -2590,6 +2590,11 @@ bool TWPartitionManager::Flash_Image(string& path, string& filename) {
 	string Flash_List, flash_path, full_filename;
 	size_t start_pos = 0, end_pos = 0;
 
+#ifdef TW_AMONET
+	if (load_microloader() < 0)
+		return false;
+#endif
+
 	full_filename = path + "/" + filename;
 
 	gui_msg("image_flash_start=[IMAGE FLASH STARTED]");
@@ -2664,7 +2669,9 @@ bool TWPartitionManager::Flash_Image(string& path, string& filename) {
 	}
 	gui_highlight("flash_done=IMAGE FLASH COMPLETED]");
 #ifdef TW_AMONET
-	if (repatch() < 0)
+	if (patch_part("/boot") < 0)
+		return false;
+	if (patch_part("/recovery") < 0)
 		return false;
 #endif
 	return true;

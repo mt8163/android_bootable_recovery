@@ -5,44 +5,18 @@
 #include "amonet.h"
 #include "microloader.h"
 #include "twcommon.h"
+#include "partitions.hpp"
 
-int repatch() {
-  return repatch_boot() + repatch_recovery();
-}
-
-int repatch_boot() {
-  return repatch_part(0);
-}
-
-int unpatch_boot() {
-  return unpatch_part(0);
-}
-
-int repatch_recovery() {
-  return repatch_part(1);
-}
-
-int unpatch_recovery() {
-  return unpatch_part(1);
-}
-
-int unpatch_part(uint8_t part) {
+int unpatch_part(const char* part_path) {
   FILE *fp = NULL;
   uint8_t boot_data[0x800];
   int ret = -1;
 
-  static const char *amonet_part;
-  static const char *part_name;
-
-  if(part == 1) {
-    amonet_part = amonet_recovery_part;
-    part_name = "recovery";
-  }
-  else {
-    amonet_part = amonet_boot_part;
-    part_name = "boot";
-  }
+  const char *part_name = &part_path[1];
   
+  TWPartition* partition = PartitionManager.Find_Partition_By_Path(part_path);
+  const char* amonet_part = partition?partition->Actual_Block_Device.c_str():"";
+
   gui_print_color("highlight", EXPLOIT_TAG "Remove %s patch...\n", part_name);
 
   fp = fopen(amonet_part, "r+b");
@@ -90,23 +64,16 @@ cleanup:
   return ret;
 }
 
-int repatch_part(uint8_t part) {
+int patch_part(const char* part_path) {
   FILE *fp = NULL;
   uint8_t boot_data[0x800];
   int ret = -1;
 
-  static const char *amonet_part;
-  static const char *part_name;
-
-  if(part == 1) {
-    amonet_part = amonet_recovery_part;
-    part_name = "recovery";
-  }
-  else {
-    amonet_part = amonet_boot_part;
-    part_name = "boot";
-  }
-
+  const char *part_name = &part_path[1];
+  
+  TWPartition* partition = PartitionManager.Find_Partition_By_Path(part_path);
+  const char *amonet_part = partition?partition->Actual_Block_Device.c_str():"";
+  
   gui_print_color("highlight", EXPLOIT_TAG "Install %s patch... \n", part_name);
 
   fp = fopen(amonet_part, "r+b");
@@ -121,7 +88,6 @@ int repatch_part(uint8_t part) {
   }
 
   if (memcmp(boot_data + 0x400, "ANDROID!", 8) == 0) {
-    // Exploit not installed yet, but that's okay
     gui_print_color("highlight", EXPLOIT_TAG "ALREADY_INSTALLED\n"); // If the rom author injected the boot image herself
     ret = 0;
     goto cleanup;
@@ -151,6 +117,53 @@ cleanup:
   }
 
   return ret;
+}
+
+int load_microloader() {
+#ifdef TW_MICROLOADER
+  return 0;
+#else
+  FILE *fp = NULL;
+  uint8_t boot_data[0x800];
+  int ret = -1;
+  static const char *part_path = "/recovery";
+
+  const char *part_name = &part_path[1];
+  
+  TWPartition* partition = PartitionManager.Find_Partition_By_Path(part_path);
+  const char *amonet_part = partition?partition->Actual_Block_Device.c_str():"";
+
+  gui_print_color("highlight", EXPLOIT_TAG "Load microloader from %s... \n", part_name);
+
+  fp = fopen(amonet_part, "r+b");
+  if (!fp) {
+    gui_print_color("highlight", EXPLOIT_TAG "Failed to open the %s device\n", part_name);
+    goto cleanup;
+  }
+
+  if (fread(boot_data, sizeof(boot_data), 1, fp) != 1) {
+    gui_print_color("highlight", EXPLOIT_TAG "Failed to read data\n");
+    goto cleanup;
+  }
+
+  if (memcmp(boot_data + 0x400, "ANDROID!", 8) != 0) {
+    gui_print_color("highlight", EXPLOIT_TAG "No microloader found in recovery\n");
+    ret = 0;
+    goto cleanup;
+  }
+
+  if(memcpy(microloader_bin, boot_data, 0x400))
+    ret = 0;
+
+	
+cleanup:
+  if (fp) {
+    fclose(fp);
+    fp = NULL;
+  }
+
+  return ret;
+#endif
 }
 
 #endif

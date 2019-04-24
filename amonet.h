@@ -5,13 +5,9 @@
 #include <unistd.h>
 
 #define EXPLOIT_TAG "[amonet] "
-int unpatch_boot();
-int repatch_boot();
-int repatch_recovery();
-int unpatch_recovery();
-int repatch();
-int unpatch_part(uint8_t part);
-int repatch_part(uint8_t part);
+int patch_part(const char* part_path);
+int unpatch_part(const char* part_path);
+int load_microloader(void);
 
 #endif  // RECOVERY_AMONET_H_
 #endif // TW_AMONET
