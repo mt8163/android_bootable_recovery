@@ -689,8 +689,11 @@ void DataManager::SetDefaultValues()
 #else
 	mConst.SetValue(TW_REBOOT_BOOTLOADER, "1");
 #endif
-#ifdef TW_AMONET
-	printf("TW_NO_REBOOT_HACKED_BL := true\n");
+//#ifdef TW_AMONET
+//	#define TW_HACKED_BL_BUTTON
+//#endif
+#ifdef TW_HACKED_BL_BUTTON
+	printf("TW_HACKED_BL_BUTTON := true\n");
 	mConst.SetValue(TW_REBOOT_HACKED_BL, "1");
 #else
 	mConst.SetValue(TW_REBOOT_HACKED_BL, "0");
