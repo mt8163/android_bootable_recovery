@@ -453,6 +453,9 @@ ifneq ($(TW_OVERRIDE_SYSTEM_PROPS),)
     TW_INCLUDE_LIBRESETPROP := true
     LOCAL_CFLAGS += -DTW_OVERRIDE_SYSTEM_PROPS=$(TW_OVERRIDE_SYSTEM_PROPS)
 endif
+ifneq ($(TW_DEFAULT_BACKUP_LIST),)
+	LOCAL_CFLAGS += -DTW_DEFAULT_BACKUP_LIST=$(TW_DEFAULT_BACKUP_LIST)
+endif
 ifneq ($(TW_INCLUDE_LIBRESETPROP),)
     ifeq ($(shell test $(PLATFORM_SDK_VERSION) -lt 24; echo $$?),0)
         $(warning libresetprop is not available for android < 7)
