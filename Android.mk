@@ -473,6 +473,11 @@ ifneq ($(TW_DEFAULT_BACKUP_LIST),)
 	LOCAL_CFLAGS += -DTW_DEFAULT_BACKUP_LIST=$(TW_DEFAULT_BACKUP_LIST)
 endif
 ifneq ($(TW_INCLUDE_LIBRESETPROP),)
+    LOCAL_SHARED_LIBRARIES += libresetprop
+    LOCAL_C_INCLUDES += external/magisk-prebuilt/include
+    LOCAL_CFLAGS += -DTW_INCLUDE_LIBRESETPROP
+endif
+ifneq ($(TW_INCLUDE_LIBRESETPROP),)
     ifeq ($(shell test $(PLATFORM_SDK_VERSION) -lt 24; echo $$?),0)
         $(warning libresetprop is not available for android < 7)
     else
