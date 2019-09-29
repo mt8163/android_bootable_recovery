@@ -377,6 +377,9 @@ protected:
 #ifdef TW_BOOT_MENU
 	int threadedsleepcounter(std::string arg);
 #endif
+#ifdef TW_BOOT_MENU
+	int threadedsleepcounter(std::string arg);
+#endif
 
 	int simulate;
 };

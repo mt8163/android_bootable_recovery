@@ -200,6 +200,9 @@ GUIAction::GUIAction(xml_node<>* node)
 		ADD_ACTION(setlanguage);
 		ADD_ACTION(checkforapp);
 		ADD_ACTION(togglebacklight);
+		ADD_ACTION(enableadb);
+		ADD_ACTION(enablefastboot);
+		ADD_ACTION(changeterminal);
 #ifdef TW_BOOT_MENU
 		ADD_ACTION(nonthreadedcmd);
 #endif
@@ -238,6 +241,10 @@ GUIAction::GUIAction(xml_node<>* node)
 		ADD_ACTION(uninstalltwrpsystemapp);
 		ADD_ACTION(repackimage);
 		ADD_ACTION(fixabrecoverybootloop);
+		ADD_ACTION(applycustomtwrpfolder);
+#ifndef TW_EXCLUDE_NANO
+		ADD_ACTION(editfile);
+# endif
 #ifdef TW_BOOT_MENU
 		ADD_ACTION(threadedsleepcounter);
 #endif

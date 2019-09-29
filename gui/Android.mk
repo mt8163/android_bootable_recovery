@@ -115,8 +115,16 @@ endif
 ifeq ($(TW_ROUND_SCREEN), true)
     LOCAL_CFLAGS += -DTW_ROUND_SCREEN
 endif
+ifeq ($(TW_EXCLUDE_NANO), true)
+    LOCAL_CFLAGS += -DTW_EXCLUDE_NANO
+endif
+ifeq ($(AB_OTA_UPDATER),true)
+    LOCAL_CFLAGS += -DAB_OTA_UPDATER=1
 ifeq ($(TW_BOOT_MENU), true)
     LOCAL_CFLAGS += -DTW_BOOT_MENU
+endif
+ifeq ($(TW_SCREEN_BLANK_ON_BOOT), true)
+    LOCAL_CFLAGS += -DTW_SCREEN_BLANK_ON_BOOT
 endif
 
 LOCAL_C_INCLUDES += \
