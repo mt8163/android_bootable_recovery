@@ -115,6 +115,9 @@ endif
 ifeq ($(TW_ROUND_SCREEN), true)
     LOCAL_CFLAGS += -DTW_ROUND_SCREEN
 endif
+ifeq ($(TW_BOOT_MENU), true)
+    LOCAL_CFLAGS += -DTW_BOOT_MENU
+endif
 
 LOCAL_C_INCLUDES += \
     bionic \

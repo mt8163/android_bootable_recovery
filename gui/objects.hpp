@@ -328,6 +328,9 @@ protected:
 	int screenshot(std::string arg);
 	int setbrightness(std::string arg);
 	int checkforapp(std::string arg);
+#ifdef TW_BOOT_MENU
+	int nonthreadedcmd(std::string arg);
+#endif
 
 	// (originally) threaded actions
 	int fileexists(std::string arg);
@@ -371,6 +374,9 @@ protected:
 	int uninstalltwrpsystemapp(std::string arg);
 	int repackimage(std::string arg);
 	int fixabrecoverybootloop(std::string arg);
+#ifdef TW_BOOT_MENU
+	int threadedsleepcounter(std::string arg);
+#endif
 
 	int simulate;
 };

@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<recovery>
+	<details>
+		<resolution width="1920" height="1200"/>
+		<author>k4y0z</author>
+		<title>Boot Menu</title>
+		<description>boot menu</description>
+		<themeversion>3</themeversion>
+	</details>
+
+	<resources>
+		<font name="font_l" filename="RobotoCondensed-Regular.ttf" size="52"/>
+		<image name="main_button" filename="main_button"/>
+		<image name="cursor" filename="cursor" retainaspect="1"/>
+                <animation name="progress" filename="indeterminate"/>
+                <image name="progress_empty" filename="progress_empty"/>
+                <image name="progress_full" filename="progress_fill"/>
+	</resources>
+
+	<variables>
+		<variable name="screen_width" value="1920"/>
+		<variable name="screen_height" value="1200"/>
+		<variable name="background_color" value="#1A1A1A"/>
+		<variable name="highlight_color" value="#1A1A1A80"/>
+                <variable name="text_color" value="#EEEEEE"/>
+                <variable name="progress_x" value="552"/>
+                <variable name="button_x" value="504"/>
+	</variables>
+
+	<mousecursor>
+		<placement w="15" h="15"/>
+		<background color="#FFFF00FF" resource="cursor"/>
+		<speed multiplier="2.5"/>
+	</mousecursor>
+
+	<templates>
+                <template name="progress_bar">
+                        <progressbar>
+                                <placement x="%progress_x%" y="600"/>
+                                <resource empty="progress_empty" full="progress_full"/>
+                                <data name="ui_progress"/>
+                        </progressbar>
+
+                        <animation>
+                                <placement x="%progress_x%" y="600"/>
+                                <resource name="progress"/>
+                                <speed fps="24" render="2"/>
+                                <loop frame="1"/>
+                        </animation>
+                </template>
+	</templates>
+
+	<styles>
+		<style name="main_button">
+			<highlight color="%highlight_color%"/>
+			<font resource="font_l" color="%text_button_color%"/>
+			<image resource="main_button"/>
+		</style>
+                <style name="text_l">
+                        <font resource="font_l" color="%text_color%"/>
+                </style>
+
+	</styles>
+
+	<pages>
+		<page name="bootmenu">
+			<action>
+				<actions>
+					<action function="set">tw_sleep=%tw_sleep_total%</action>
+					<action function="page">bootmenu2</action>
+				</actions>
+			</action>
+		</page>
+
+		<page name="bootmenu2">
+			<background color="%background_color%"/>
+
+			<button style="main_button">
+				<condition var1="tw_sleep" op="&gt;" var2="0"/>
+				<placement x="%button_x%" y="320"/>
+				<text>{@cancel_btn=Cancel}</text>
+				<actions>
+					<action function="set">bm_loaded=0</action>
+					<action function="set">tw_gui_done=1</action>
+				</actions>
+			</button>
+
+			<template name="progress_bar"/>
+
+                        <action>
+                                <conditions>
+                                        <condition var1="tw_sleep" var2="tw_sleep_total"/>
+                                        <condition var1="bm_loaded" var2="1"/>
+                                </conditions>
+                                <action function="threadedsleepcounter">%tw_sleep_total%</action>
+                        </action>
+
+			<action>
+                                <conditions>
+                                        <condition var1="tw_sleep" var2="0"/>
+                                        <condition var1="bm_loaded" var2="1"/>
+                                </conditions>
+                                <actions>
+                                        <action function="sleep">50000</action>
+					<action function="nonthreadedcmd">echo -ne "boot-system\x00" | dd of=%misc_dev% >/dev/null 2>&1 && reboot</action>
+                                </actions>
+                        </action>
+
+                        <text style="text_l">
+                                <placement x="%progress_x%" y="700"/>
+                                <text>{@install_reboot=Rebooting in %tw_sleep% second(s)}</text>
+                        </text>
+
+		</page>
+	</pages>
+</recovery>
+
