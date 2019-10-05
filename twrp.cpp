@@ -403,7 +403,7 @@ int main(int argc, char **argv) {
 	if (fp != NULL) {
 		fgets(line, sizeof(line), fp);
 		fclose(fp); // cmdline is only one line long
-		if(strstr(line, "boot_reason=0")) {
+		if(strstr(line, "boot_reason=0") && strstr(line, "y_cable=1")) {
 			boot_menu();
 		}
 	}
