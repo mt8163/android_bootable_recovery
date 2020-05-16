@@ -107,6 +107,10 @@ ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 29; echo $$?),0)
         system/extras/ext4_utils/include
 endif
 
+ifeq ($(TW_IP_ADDRESS), true)
+    LOCAL_CFLAGS += -DTW_IP_ADDRESS
+endif
+
 ifneq ($(TARGET_RECOVERY_REBOOT_SRC),)
   LOCAL_SRC_FILES += $(TARGET_RECOVERY_REBOOT_SRC)
 endif

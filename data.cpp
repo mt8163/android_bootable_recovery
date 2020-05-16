@@ -25,6 +25,11 @@
 #include <cutils/properties.h>
 #include <unistd.h>
 
+#ifdef TW_IP_ADDRESS
+#include <arpa/inet.h>
+#include <net/if.h>
+#endif
+
 #include "variables.h"
 #include "data.hpp"
 #include "partitions.hpp"
@@ -1097,6 +1102,30 @@ int DataManager::GetMagicValue(const string& varName, string& value)
 		value = tmp;
 		return 0;
 	}
+#ifdef TW_IP_ADDRESS
+	else if (varName == "tw_ip_address")
+	{
+		char tmp[16];
+		static char lastIp[16] = {0};
+		static time_t nextIpCheck = 0;
+		struct timeval curTime;
+		gettimeofday(&curTime, NULL);
+		if (curTime.tv_sec > nextIpCheck)
+		{
+			struct ifreq ifr = { 0 };
+			strcpy(ifr.ifr_name, "eth0");
+			int fd = socket(AF_INET, SOCK_DGRAM, 0);
+			ioctl(fd, SIOCGIFADDR, &ifr);
+			snprintf(lastIp, 15, "%s", inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr));
+			close(fd);
+			nextIpCheck = curTime.tv_sec + 60;
+		}
+
+		sprintf(tmp, "%s", lastIp);
+		value = tmp;
+		return 0;
+    }
+#endif
 	return -1;
 }
 
