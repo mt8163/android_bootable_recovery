@@ -87,6 +87,10 @@ ifeq ($(TW_AMONET), true)
   endif
 endif
 
+ifeq ($(TW_IP_ADDRESS), true)
+    LOCAL_CFLAGS += -DTW_IP_ADDRESS
+endif
+
 ifneq ($(TARGET_RECOVERY_REBOOT_SRC),)
   LOCAL_SRC_FILES += $(TARGET_RECOVERY_REBOOT_SRC)
 endif

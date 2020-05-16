@@ -294,6 +294,16 @@
 				<text>{@battery_pct=Battery: %tw_battery%}</text>
 			</text>
 
+			<text color="%text_color%">
+				<conditions>
+					<condition var1="tw_no_battery_percent" var2="1"/>
+					<condition var1="tw_ip_address"/>
+				</conditions>
+				<font resource="font_m"/>
+				<placement x="%indent_right%" y="%row1_header_y%" placement="1"/>
+				<text>IP Address: %tw_ip_address%</text>
+			</text>
+
 			<fill color="#000000">
 				<condition var1="tw_busy" var2="0"/>
 				<placement x="0" y="%navbar_y%" w="%screen_width%" h="%navbar_height%"/>
