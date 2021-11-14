@@ -278,44 +278,6 @@ int DataManager::LoadValues(const string& filename)
 	return 0;
 }
 
-int DataManager::LoadPersistValues(void)
-{
-	static bool loaded = false;
-	string dev_id;
-
-	// Only run this function once, and make sure normal settings file has not yet been read
-	if (loaded || !mBackingFile.empty() || !TWFunc::Path_Exists(PERSIST_SETTINGS_FILE))
-		return -1;
-
-	LOGINFO("Attempt to load settings from /persist settings file...\n");
-
-	if (!mInitialized)
-		SetDefaultValues();
-
-	GetValue("device_id", dev_id);
-	mPersist.SetFile(PERSIST_SETTINGS_FILE);
-	mPersist.SetFileVersion(FILE_VERSION);
-
-	// Read in the file, if possible
-	pthread_mutex_lock(&m_valuesLock);
-	mPersist.LoadValues();
-
-#ifndef TW_NO_SCREEN_TIMEOUT
-	blankTimer.setTime(mPersist.GetIntValue("tw_screen_timeout_secs"));
-#endif
-
-	update_tz_environment_variables();
-	TWFunc::Set_Brightness(GetStrValue("tw_brightness"));
-
-	pthread_mutex_unlock(&m_valuesLock);
-
-	/* Don't set storage nor backup paths this early */
-
-	loaded = true;
-
-	return 0;
-}
-
 int DataManager::Flush()
 {
 	return SaveValues();
@@ -324,15 +286,6 @@ int DataManager::Flush()
 int DataManager::SaveValues()
 {
 #ifndef TW_OEM_BUILD
-	if (PartitionManager.Mount_By_Path("/persist", false)) {
-		mPersist.SetFile(PERSIST_SETTINGS_FILE);
-		mPersist.SetFileVersion(FILE_VERSION);
-		pthread_mutex_lock(&m_valuesLock);
-		mPersist.SaveValues();
-		pthread_mutex_unlock(&m_valuesLock);
-		LOGINFO("Saved settings file values to %s\n", PERSIST_SETTINGS_FILE);
-	}
-
 	if (mBackingFile.empty())
 		return -1;
 
@@ -578,7 +531,7 @@ void DataManager::SetBackupFolder()
 {
 	string str = GetCurrentStoragePath();
 	TWPartition* partition = PartitionManager.Find_Partition_By_Path(str);
-	str += "/TWRP/BACKUPS/";
+	str += TWFunc::Check_For_TwrpFolder() + "/BACKUPS/";
 
 	string dev_id;
 	GetValue("device_id", dev_id);
@@ -665,9 +618,11 @@ void DataManager::SetDefaultValues()
 	mConst.SetValue(TW_SHOW_DUMLOCK, "0");
 #endif
 
+	mData.SetValue(TW_RECOVERY_FOLDER_VAR, TW_DEFAULT_RECOVERY_FOLDER);
+
 	str = GetCurrentStoragePath();
 	mPersist.SetValue(TW_ZIP_LOCATION_VAR, str);
-	str += "/TWRP/BACKUPS/";
+	str += DataManager::GetStrValue(TW_RECOVERY_FOLDER_VAR) + "/BACKUPS/";
 
 	string dev_id;
 	mConst.GetValue("device_id", dev_id);
@@ -778,6 +733,10 @@ void DataManager::SetDefaultValues()
 	printf("TW_HAS_EDL_MODE := true\n");
 	mConst.SetValue(TW_EDL_MODE, "1");
 #endif
+#ifdef PRODUCT_USE_DYNAMIC_PARTITIONS
+	printf("PRODUCT_USE_DYNAMIC_PARTITIONS := true\n");
+	mConst.SetValue(TW_FASTBOOT_MODE, "1");
+#endif
 #ifdef TW_INCLUDE_CRYPTO
 	mConst.SetValue(TW_HAS_CRYPTO, "1");
 	printf("TW_INCLUDE_CRYPTO := true\n");
@@ -818,6 +777,7 @@ void DataManager::SetDefaultValues()
 	mPersist.SetValue(TW_GUI_SORT_ORDER, "1");
 	mPersist.SetValue(TW_RM_RF_VAR, "0");
 	mPersist.SetValue(TW_SKIP_DIGEST_CHECK_VAR, "0");
+	mPersist.SetValue(TW_SKIP_DIGEST_CHECK_ZIP_VAR, "1");
 	mPersist.SetValue(TW_SKIP_DIGEST_GENERATE_VAR, "0");
 	mPersist.SetValue(TW_SDEXT_SIZE, "0");
 	mPersist.SetValue(TW_SWAP_SIZE, "0");
@@ -861,6 +821,7 @@ void DataManager::SetDefaultValues()
 	mData.SetValue("tw_encrypt_backup", "0");
 	mData.SetValue("tw_sleep_total", "5");
 	mData.SetValue("tw_sleep", "5");
+	mData.SetValue("tw_enable_fastboot", "0");
 
 	// Brightness handling
 	string findbright;
@@ -983,10 +944,19 @@ void DataManager::SetDefaultValues()
 	mData.SetValue("tw_app_install_status", "2"); // 0 = no status, 1 = not installed, 2 = already installed
 	mData.SetValue("tw_app_installed_in_system", "0");
 #endif
+#ifndef TW_EXCLUDE_NANO
+	mConst.SetValue("tw_include_nano", "1");
+#else
+	LOGINFO("TW_EXCLUDE_NANO := true\n");
+	mConst.SetValue("tw_include_nano", "0");
+#endif
+
+	mData.SetValue("tw_flash_both_slots", "0");
+	mData.SetValue("tw_is_slot_part", "0");
 
 	mData.SetValue("tw_enable_adb_backup", "0");
 
-	if (TWFunc::Path_Exists("/sbin/magiskboot"))
+	if (TWFunc::Path_Exists("/system/bin/magiskboot"))
 		mConst.SetValue("tw_has_repack_tools", "1");
 	else
 		mConst.SetValue("tw_has_repack_tools", "0");
@@ -1193,8 +1163,8 @@ void DataManager::ReadSettingsFile(void)
 
 	memset(mkdir_path, 0, sizeof(mkdir_path));
 	memset(settings_file, 0, sizeof(settings_file));
-	sprintf(mkdir_path, "%s/TWRP", GetSettingsStoragePath().c_str());
-	sprintf(settings_file, "%s/.twrps", mkdir_path);
+	sprintf(mkdir_path, "%s%s", GetSettingsStoragePath().c_str(), GetStrValue(TW_RECOVERY_FOLDER_VAR).c_str());
+	sprintf(settings_file, "%s/%s", mkdir_path, TW_SETTINGS_FILE);
 
 	if (!PartitionManager.Mount_Settings_Storage(false))
 	{
@@ -1233,4 +1203,12 @@ void DataManager::Vibrate(const string& varName)
 		vibrate(vib_value);
 	}
 #endif
+}
+
+
+void DataManager::LoadTWRPFolderInfo(void)
+{
+	string mainPath = GetCurrentStoragePath();
+	SetValue(TW_RECOVERY_FOLDER_VAR, TWFunc::Check_For_TwrpFolder());
+	mBackingFile = mainPath + GetStrValue(TW_RECOVERY_FOLDER_VAR) + '/' + TW_SETTINGS_FILE;
 }

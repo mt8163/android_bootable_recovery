@@ -119,7 +119,7 @@
 		<string name="rebooting">Rebooting...</string>
 		<string name="swipe_reboot">Swipe to Reboot</string>
 		<string name="swipe_reboot_s">   Reboot</string>
-		<string name="reboot_install_app_hdr">Install TWRP App?</string>
+		<string name="reboot_install_app_hdr">Install TWRP App</string>
 		<string name="reboot_install_app1">Would you like to install the Official TWRP App?</string>
 		<string name="reboot_install_app2">The app can check for new TWRP versions.</string>
 		<string name="reboot_install_app_prompt_install">Prompt to install TWRP app if not installed</string>
@@ -141,6 +141,7 @@
 		<string name="factory_reset2">(not including internal storage)</string>
 		<string name="factory_reset3">Most of the time this is</string>
 		<string name="factory_reset4">the only wipe that you need.</string>
+		<string name="factory_reset5">(not including users/lockscreen)</string>
 		<string name="factory_resetting">Factory Reset...</string>
 		<string name="advanced_wipe_hdr">Advanced Wipe</string>
 		<string name="advanced_wipe_btn">Advanced Wipe</string>
@@ -225,6 +226,7 @@
 		<string name="enable_backup_comp_chk">Enable compression</string>
 		<string name="skip_digest_backup_chk" version="2">Skip Digest generation during backup</string>
 		<string name="disable_backup_space_chk" version="2">Disable free space check before backup</string>
+		<string name="skip_digest_zip_chk">Skip Digest check before installing zip</string>
 		<string name="current_boot_slot">Current Slot: %tw_active_slot%</string>
 		<string name="boot_slot_a">Slot A</string>
 		<string name="boot_slot_b">Slot B</string>
@@ -459,6 +461,8 @@
 		<string name="fm_set_perms_hdr">Set Permissions</string>
 		<string name="fm_perms">Permissions:</string>
 		<string name="fm_complete">File Operation Complete</string>
+		<string name="fm_open_terminal_btn">Open Terminal Here</string>
+		<string name="fm_edit_file">Edit File</string>
 		<string name="decrypt_data_hdr">Decrypt Data</string>
 		<string name="decrypt_data_enter_pass">Enter Password.</string>
 		<string name="decrypt_data_failed">Password failed, please try again!</string>
@@ -512,6 +516,19 @@
 		<string name="fix_recovery_loop_complete">Fix Recovery Bootloop Complete</string>
 		<string name="fixing_recovery_loop_patch">Patching kernel...</string>
 		<string name="fix_recovery_loop_patch_error">Error patching kernel.</string>
+		<string name="decrypt_users">Decrypt Users</string>
+		<string name="decrypt_users_selection">Select a user ID to decrypt</string>
+		<string name="select_user">Select User</string>
+		<string name="backup_storage_undecrypt_warning">Backup will not include some files of user {1}, because the user is not decrypted.</string>
+		<string name="decrypting_user_fbe">Attempting to decrypt FBE for user {1}...</string>
+		<string name="decrypt_user_success_fbe">User {1} Decrypted Successfully</string>
+		<string name="decrypt_user_fail_fbe">Failed to decrypt user {1}</string>
+		<string name="decrypt_data_enter_pass_fbe">Enter Password for User [%tw_crypto_user_id%]</string>
+		<string name="decrypt_data_enter_pattern_fbe">Enter Pattern for User [%tw_crypto_user_id%]</string>
+		<string name="multiuser_warning1">Not all users decrypted!</string>
+		<string name="multiuser_warning2">Backup/restore operations may fail!</string>
+		<string name="multiuser_warning_accept">Continue Anyway</string>
+		<string name="multiuser_warning_hdr">Multiuser Warning</string>
 
 		<!-- Various console messages - these consist of user displayed messages, oftentimes errors -->
 		<string name="no_kernel_selinux">Kernel does not have support for reading SELinux contexts.</string>
@@ -688,7 +705,7 @@
 		<!-- These 2 items are saved in the data manager instead of resource manager, so %llu, etc is correct instead of {1} -->
 		<string name="file_progress">%llu of %llu files, %i%%</string>
 		<string name="size_progress">%lluMB of %lluMB, %i%%</string>
-		<string name="decrypt_cmd">Attempting to decrypt data partition via command line.</string>
+		<string name="decrypt_cmd" version="2">Attempting to decrypt data partition or user data via command line.</string>
 		<string name="base_pkg_err">Failed to load base packages.</string>
 		<string name="simulating">Simulating actions...</string>
 		<string name="backup_cancel">Backup Cancelled</string>
@@ -725,8 +742,24 @@
 		<string name="unmount_system_err">Failed unmounting System</string>
 		<string name="flash_ab_inactive">Flashing A/B zip to inactive slot: {1}</string>
 		<string name="flash_ab_reboot">To flash additional zips, please reboot recovery to switch to the updated slot.</string>
+		<string name="flash_ab_both_slots">Flash to both slots</string>
 		<string name="ozip_decrypt_decryption">Starting Ozip Decryption...</string>
 		<string name="ozip_decrypt_finish">Ozip Decryption Finished!</string>
 		<string name="fbe_wipe_msg">WARNING: {1} wiped. FBE device should be booted into Android and not Recovery to set initial FBE policy after wipe.</string>
+		<string name="fastboot_button">Fastboot</string>
+		<string name="enable_adb">Enable ADB</string>
+		<string name="enable_fastboot">Enable Fastboot</string>
+		<string name="fastboot_console_msg">Entered Fastboot mode...</string>
+		<!-- Android Rescue Party trigger -->
+		<string name="rescue_party0">Android Rescue Party trigger! Possible solutions? Either:</string>
+		<string name="rescue_party1"> 1. Wipe caches, and/or</string>
+		<string name="rescue_party2"> 2. Format data, and/or</string>
+		<string name="rescue_party3"> 3. Clean-flash your ROM.</string>
+		<string name="rescue_party4">The reported problem is: </string>
+		<string name="restore_system_context">Unable to get default context for {1} -- Android may not boot.</string>
+		<string name="change_twrp_folder_btn">Change TWRP folder</string>
+		<string name="change_twrp_folder_on_process">Changing TWRP folder</string>
+		<string name="change_twrp_folder_after_process">TWRP folder changed to</string>
+		<string name="tw_folder_exists">A folder with that name already exists!</string>
 	</resources>
 </language>

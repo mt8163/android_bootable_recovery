@@ -43,9 +43,10 @@ void print_usage(void) {
 	printf("  backup <SDCRBAEM> [backupname]\n");
 	printf("  restore <SDCRBAEM> [backupname]\n");
 	printf("  wipe <partition name>\n");
+	printf("  format data\n");
 	printf("  sideload\n");
 	printf("  set <variable> [value]\n");
-	printf("  decrypt <password>\n");
+	printf("  decrypt <password> [USER ID]\n");
 	printf("  remountrw\n");
 	printf("  fixperms\n");
 	printf("  mount <path>\n");

@@ -1,5 +1,5 @@
 /*
-	Copyright 2012 bigbiff/Dees_Troy TeamWin
+	Copyright 2012-2020 TeamWin
 	This file is part of TWRP/TeamWin Recovery Project.
 
 	TWRP is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@
 #include "data.hpp"
 #include "partitions.hpp"
 #include "variables.h"
-#include "bootloader_message_twrp/include/bootloader_message_twrp/bootloader_message.h"
+#include "bootloader_message/include/bootloader_message/bootloader_message.h"
 #include "cutils/properties.h"
 #include "cutils/android_reboot.h"
 #include <sys/reboot.h>
@@ -66,12 +66,15 @@ extern "C" {
 struct selabel_handle *selinux_handle;
 
 /* Execute a command */
-int TWFunc::Exec_Cmd(const string& cmd, string &result) {
+int TWFunc::Exec_Cmd(const string& cmd, string &result, bool combine_stderr) {
 	FILE* exec;
 	char buffer[130];
 	int ret = 0;
-	exec = __popen(cmd.c_str(), "r");
-	if (!exec) return -1;
+	std::string popen_cmd = cmd;
+	if (combine_stderr)
+		popen_cmd = cmd + " 2>&1";
+	exec = __popen(popen_cmd.c_str(), "r");
+
 	while (!feof(exec)) {
 		if (fgets(buffer, 128, exec) != NULL) {
 			result += buffer;
@@ -90,7 +93,7 @@ int TWFunc::Exec_Cmd(const string& cmd, bool Show_Errors) {
 			LOGERR("Exec_Cmd(): vfork failed: %d!\n", errno);
 			return -1;
 		case 0: // child
-			execl("/sbin/sh", "sh", "-c", cmd.c_str(), NULL);
+			execl("/system/bin/sh", "sh", "-c", cmd.c_str(), NULL);
 			_exit(127);
 			break;
 		default:
@@ -530,7 +533,7 @@ void TWFunc::Copy_Log(string Source, string Destination) {
 		if (type == COMPRESSED) {
 			std::string destFileBuffer;
 			std::string getCompressedContents = "pigz -c -d " + Destination;
-			if (Exec_Cmd(getCompressedContents, destFileBuffer) < 0) {
+			if (Exec_Cmd(getCompressedContents, destFileBuffer, false) < 0) {
 				LOGINFO("Unable to get destination logfile contents.\n");
 				return;
 			}
@@ -616,19 +619,6 @@ void TWFunc::Update_Log_File(void) {
 	chmod(logCopy.c_str(), 0600);
 	chmod(lastLogCopy.c_str(), 0640);
 
-	// Reset bootloader message
-	TWPartition* Part = PartitionManager.Find_Partition_By_Path("/misc");
-	if (Part != NULL) {
-		std::string err;
-		if (!clear_bootloader_message((void*)&err)) {
-			if (err == "no misc device set") {
-				LOGINFO("%s\n", err.c_str());
-			} else {
-				LOGERR("%s\n", err.c_str());
-			}
-		}
-	}
-
 	if (get_log_dir() == CACHE_LOGS_DIR) {
 		if (PartitionManager.Mount_By_Path("/cache", false)) {
 			if (unlink("/cache/recovery/command") && errno != ENOENT) {
@@ -637,6 +627,13 @@ void TWFunc::Update_Log_File(void) {
 		}
 	}
 	sync();
+}
+
+void TWFunc::Clear_Bootloader_Message() {
+	std::string err;
+	if (!clear_bootloader_message(&err)) {
+		LOGINFO("%s\n", err.c_str());
+	}
 }
 
 void TWFunc::Update_Intent_File(string Intent) {
@@ -660,7 +657,7 @@ int TWFunc::tw_reboot(RebootCommand command)
 		case rb_system:
 			Update_Intent_File("s");
 			sync();
-			check_and_run_script("/sbin/rebootsystem.sh", "reboot system");
+			check_and_run_script("/system/bin/rebootsystem.sh", "reboot system");
 #ifdef ANDROID_RB_PROPERTY
 			return property_set(ANDROID_RB_PROPERTY, "reboot,");
 #elif defined(ANDROID_RB_RESTART)
@@ -669,15 +666,10 @@ int TWFunc::tw_reboot(RebootCommand command)
 			return reboot(RB_AUTOBOOT);
 #endif
 		case rb_recovery:
-			check_and_run_script("/sbin/rebootrecovery.sh", "reboot recovery");
-#ifdef ANDROID_RB_PROPERTY
+			check_and_run_script("/system/bin/rebootrecovery.sh", "reboot recovery");
 			return property_set(ANDROID_RB_PROPERTY, "reboot,recovery");
-#else
-			return __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, (void*) "recovery");
-#endif
 		case rb_bootloader:
-			check_and_run_script("/sbin/rebootbootloader.sh", "reboot bootloader");
-#ifdef ANDROID_RB_PROPERTY
+			check_and_run_script("/system/bin/rebootbootloader.sh", "reboot bootloader");
 			return property_set(ANDROID_RB_PROPERTY, "reboot,bootloader");
 		case rb_hacked_bl:
 			if(!amonet_bootloader_message((void*)&err)) {
@@ -689,7 +681,7 @@ int TWFunc::tw_reboot(RebootCommand command)
 			return __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, (void*) "recovery");
 #endif
 		case rb_poweroff:
-			check_and_run_script("/sbin/poweroff.sh", "power off");
+			check_and_run_script("/system/bin/poweroff.sh", "power off");
 #ifdef ANDROID_RB_PROPERTY
 			return property_set(ANDROID_RB_PROPERTY, "shutdown,");
 #elif defined(ANDROID_RB_POWEROFF)
@@ -698,19 +690,13 @@ int TWFunc::tw_reboot(RebootCommand command)
 			return reboot(RB_POWER_OFF);
 #endif
 		case rb_download:
-			check_and_run_script("/sbin/rebootdownload.sh", "reboot download");
-#ifdef ANDROID_RB_PROPERTY
+			check_and_run_script("/system/bin/rebootdownload.sh", "reboot download");
 			return property_set(ANDROID_RB_PROPERTY, "reboot,download");
-#else
-			return __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, (void*) "download");
-#endif
 		case rb_edl:
-			check_and_run_script("/sbin/rebootedl.sh", "reboot edl");
-#ifdef ANDROID_RB_PROPERTY
+			check_and_run_script("/system/bin/rebootedl.sh", "reboot edl");
 			return property_set(ANDROID_RB_PROPERTY, "reboot,edl");
-#else
-			return __reboot(LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, (void*) "edl");
-#endif
+		case rb_fastboot:
+			return property_set(ANDROID_RB_PROPERTY, "reboot,fastboot");
 		default:
 			return -1;
 	}
@@ -777,7 +763,7 @@ int TWFunc::copy_file(string src, string dst, int mode) {
 	PartitionManager.Mount_By_Path(src, false);
 	PartitionManager.Mount_By_Path(dst, false);
 	if (!Path_Exists(src)) {
-		LOGINFO("Unable to find source file %s\n", src.c_str());
+		LOGINFO("Path %s does not exist. Unable to copy %s\n", src.c_str(), dst.c_str());
 		return -1;
 	}
 	std::ifstream srcfile(src.c_str(), ios::binary);
@@ -1235,10 +1221,10 @@ unsigned long long TWFunc::IOCTL_Get_Block_Size(const char* block_device) {
 
 void TWFunc::copy_kernel_log(string curr_storage) {
 	std::string dmesgDst = curr_storage + "/dmesg.log";
-	std::string dmesgCmd = "/sbin/dmesg";
+	std::string dmesgCmd = "/system/bin/dmesg";
 
 	std::string result;
-	Exec_Cmd(dmesgCmd, result);
+	Exec_Cmd(dmesgCmd, result, false);
 	write_to_file(dmesgDst, result);
 	gui_msg(Msg("copy_kernel_log=Copied kernel log to {1}")(dmesgDst));
 	tw_set_default_metadata(dmesgDst.c_str());
@@ -1255,7 +1241,7 @@ bool TWFunc::isNumber(string strtocheck) {
 }
 
 int TWFunc::stream_adb_backup(string &Restore_Name) {
-	string cmd = "/sbin/bu --twrp stream " + Restore_Name;
+	string cmd = "/system/bin/bu --twrp stream " + Restore_Name;
 	LOGINFO("stream_adb_backup: %s\n", cmd.c_str());
 	int ret = TWFunc::Exec_Cmd(cmd);
 	if (ret != 0)
@@ -1266,11 +1252,8 @@ int TWFunc::stream_adb_backup(string &Restore_Name) {
 std::string TWFunc::get_log_dir() {
 	if (PartitionManager.Find_Partition_By_Path(CACHE_LOGS_DIR) == NULL) {
 		if (PartitionManager.Find_Partition_By_Path(DATA_LOGS_DIR) == NULL) {
-			if (PartitionManager.Find_Partition_By_Path(PERSIST_LOGS_DIR) == NULL) {
-				LOGINFO("Unable to find a directory to store TWRP logs.");
-				return "";
-			}
-			return PERSIST_LOGS_DIR;
+			LOGINFO("Unable to find a directory to store TWRP logs.");
+			return "";
 		} else {
 			return DATA_LOGS_DIR;
 		}
@@ -1309,8 +1292,8 @@ void TWFunc::check_selinux_support() {
 		if (TWFunc::Path_Exists(se_context_check)) {
 			ret = lgetfilecon(se_context_check.c_str(), &contexts);
 			if (ret < 0) {
-				LOGINFO("Could not check %s SELinux contexts, using /sbin/teamwin instead which may be inaccurate.\n", se_context_check.c_str());
-				lgetfilecon("/sbin/teamwin", &contexts);
+				LOGINFO("Could not check %s SELinux contexts, using /system/bin/teamwin instead which may be inaccurate.\n", se_context_check.c_str());
+				lgetfilecon("/system/bin/teamwin", &contexts);
 			}
 		}
 		if (ret < 0) {
@@ -1326,25 +1309,76 @@ bool TWFunc::Is_TWRP_App_In_System() {
 	LOGINFO("checking for twrp app\n");
 	TWPartition* sys = PartitionManager.Find_Partition_By_Path(PartitionManager.Get_Android_Root_Path());
 	if (!sys->Get_Super_Status()) {
-		if (PartitionManager.Mount_By_Path(PartitionManager.Get_Android_Root_Path(), false)) {
-			string base_path = PartitionManager.Get_Android_Root_Path();
-			if (TWFunc::Path_Exists(PartitionManager.Get_Android_Root_Path() + "/system"))
-				base_path += "/system"; // For devices with system as a root file system (e.g. Pixel)
-			string install_path = base_path + "/priv-app";
-			if (!TWFunc::Path_Exists(install_path))
-				install_path = base_path + "/app";
-			install_path += "/twrpapp";
-			if (TWFunc::Path_Exists(install_path)) {
-				LOGINFO("App found at '%s'\n", install_path.c_str());
-				DataManager::SetValue("tw_app_installed_in_system", 1);
-				return true;
-			}
+		bool is_system_mounted = true;
+		if(!PartitionManager.Is_Mounted_By_Path(PartitionManager.Get_Android_Root_Path())) {
+			is_system_mounted = false;
+			PartitionManager.Mount_By_Path(PartitionManager.Get_Android_Root_Path(), false);
 		}
+		string base_path = PartitionManager.Get_Android_Root_Path();
+		if (TWFunc::Path_Exists(PartitionManager.Get_Android_Root_Path() + "/system"))
+			base_path += "/system"; // For devices with system as a root file system (e.g. Pixel)
+		string install_path = base_path + "/priv-app";
+		if (!TWFunc::Path_Exists(install_path))
+			install_path = base_path + "/app";
+		install_path += "/twrpapp";
+		if (TWFunc::Path_Exists(install_path)) {
+			LOGINFO("App found at '%s'\n", install_path.c_str());
+			DataManager::SetValue("tw_app_installed_in_system", 1);
+			return true;
+		}
+		if (!is_system_mounted)
+			PartitionManager.UnMount_By_Path(PartitionManager.Get_Android_Root_Path(), false);
 		DataManager::SetValue("tw_app_installed_in_system", 0);
 	}
 	DataManager::SetValue("tw_app_installed_in_system", 0);
-	PartitionManager.UnMount_By_Path(PartitionManager.Get_Android_Root_Path(), false);
 	return false;
+}
+
+void TWFunc::checkforapp(){
+
+	string sdkverstr = System_Property_Get("ro.build.version.sdk");
+	int sdkver = 0;
+	if (!sdkverstr.empty()) {
+		sdkver = atoi(sdkverstr.c_str());
+	}
+	if (sdkver <= 13) {
+		if (sdkver == 0)
+			LOGINFO("Unable to read sdk version from build prop\n");
+		else
+			LOGINFO("SDK version too low for TWRP app (%i < 14)\n", sdkver);
+		DataManager::SetValue("tw_app_install_status", 1); // 0 = no status, 1 = not installed, 2 = already installed or do not install
+		goto exit;
+	}
+	if (Is_TWRP_App_In_System()) {
+		DataManager::SetValue("tw_app_install_status", 2); // 0 = no status, 1 = not installed, 2 = already installed or do not install
+		goto exit;
+	}
+	if (PartitionManager.Mount_By_Path("/data", false)) {
+		const char parent_path[] = "/data/app";
+		const char app_prefix[] = "me.twrp.twrpapp-";
+		DIR *d = opendir(parent_path);
+		if (d) {
+			struct dirent *p;
+			while ((p = readdir(d))) {
+				if (p->d_type != DT_DIR || strlen(p->d_name) < strlen(app_prefix) || strncmp(p->d_name, app_prefix, strlen(app_prefix)))
+					continue;
+				closedir(d);
+				LOGINFO("App found at '%s/%s'\n", parent_path, p->d_name);
+				DataManager::SetValue("tw_app_install_status", 2); // 0 = no status, 1 = not installed, 2 = already installed or do not install
+				goto exit;
+			}
+			closedir(d);
+		}
+	} else {
+		LOGINFO("Data partition cannot be mounted during app check\n");
+		DataManager::SetValue("tw_app_install_status", 2); // 0 = no status, 1 = not installed, 2 = already installed or do not install
+	}
+
+	LOGINFO("App not installed\n");
+	DataManager::SetValue("tw_app_install_status", 1); // 0 = no status, 1 = not installed, 2 = already installed
+exit:
+	return;
+
 }
 
 int TWFunc::Property_Override(string Prop_Name, string Prop_Value) {
@@ -1389,5 +1423,98 @@ bool TWFunc::Set_Encryption_Policy(std::string path, const fscrypt_encryption_po
 		return false;
 	}
 	return true;
+}
+
+string TWFunc::Check_For_TwrpFolder() {
+	string oldFolder = "";
+	vector<string> customTWRPFolders;
+	string mainPath = DataManager::GetCurrentStoragePath();
+	DIR* d;
+	struct dirent* de;
+
+	if (DataManager::GetIntValue(TW_IS_ENCRYPTED)) {
+		goto exit;
+	}
+
+
+	d = opendir(mainPath.c_str());
+	if (d == NULL) {
+		goto exit;
+	}
+
+	while ((de = readdir(d)) != NULL) {
+		string name = de->d_name;
+		string fullPath = mainPath + '/' + name;
+		unsigned char type = de->d_type;
+
+		if (name == "." || name == "..") continue;
+
+		if (type == DT_UNKNOWN) {
+			type = Get_D_Type_From_Stat(fullPath);
+		}
+
+		if (type == DT_DIR && Path_Exists(fullPath + '/' + TW_SETTINGS_FILE)) {
+			if ('/' + name == TW_DEFAULT_RECOVERY_FOLDER) {
+				oldFolder = name;
+			} else {
+				customTWRPFolders.push_back(name);
+			}
+		}
+	}
+
+	closedir(d);
+
+	if (oldFolder == "" && customTWRPFolders.empty()) {
+		LOGINFO("No recovery folder found. Using default folder.\n");
+		goto exit;
+	} else if (customTWRPFolders.empty()) {
+		LOGINFO("No custom recovery folder found. Using TWRP as default.\n");
+		goto exit;
+	} else {
+		if (customTWRPFolders.size() > 1) {
+			LOGINFO("More than one custom recovery folder found. Using first one from the list.\n");
+		} else {
+			LOGINFO("One custom recovery folder found.\n");
+		}
+		string customPath =  '/' + customTWRPFolders.at(0);
+
+		if (Path_Exists(mainPath + TW_DEFAULT_RECOVERY_FOLDER)) {
+			string oldBackupFolder = mainPath + TW_DEFAULT_RECOVERY_FOLDER + "/BACKUPS/" + DataManager::GetStrValue("device_id");
+			string newBackupFolder = mainPath + customPath + "/BACKUPS/" + DataManager::GetStrValue("device_id");
+
+			if (Path_Exists(oldBackupFolder)) {
+				vector<string> backups;
+				d = opendir(oldBackupFolder.c_str());
+
+				if (d != NULL) {
+					while ((de = readdir(d)) != NULL) {
+						string name = de->d_name;
+						unsigned char type = de->d_type;
+
+						if (name == "." || name == "..") continue;
+
+						if (type == DT_UNKNOWN) {
+							type = Get_D_Type_From_Stat(mainPath + '/' + name);
+						}
+
+						if (type == DT_DIR) {
+							backups.push_back(name);
+						}
+					}
+					closedir(d);
+				}
+
+				for (auto it = backups.begin(); it != backups.end(); it++) {
+					Exec_Cmd("mv -f \"" + oldBackupFolder + '/' + *it + "\" \"" + newBackupFolder + '/' + *it + (Path_Exists(newBackupFolder + '/' + *it) ? "_new\"" : "\""));
+				}
+			}
+			Exec_Cmd("rm -rf \"" + mainPath + TW_DEFAULT_RECOVERY_FOLDER + '\"');
+		}
+
+		return customPath;
+	}
+
+exit:
+	return TW_DEFAULT_RECOVERY_FOLDER;
 }
 #endif // ndef BUILD_TWRPTAR_MAIN

@@ -549,13 +549,16 @@ std::string unwrapSyntheticPasswordBlob(const std::string& spblob_path, const st
 	std::string disk_decryption_secret_key = "";
 
 	std::string keystore_alias_subid;
-	if (!Find_Keystore_Alias_SubID_And_Prep_Files(user_id, keystore_alias_subid, handle_str)) {
-		printf("failed to scan keystore alias subid and prep keystore files\n");
-		return disk_decryption_secret_key;
-	}
+	// Can be stored in user 0, so check for both.
+	if (!Find_Keystore_Alias_SubID_And_Prep_Files(user_id, keystore_alias_subid, handle_str) &&
+		!Find_Keystore_Alias_SubID_And_Prep_Files(0, keystore_alias_subid, handle_str)) 
+	{
+    	printf("failed to scan keystore alias subid and prep keystore files\n");
+    	return disk_decryption_secret_key;
+  	}
 
 	// First get the keystore service
-    sp<IBinder> binder = getKeystoreBinderRetry();
+	sp<IBinder> binder = getKeystoreBinderRetry();
 #ifdef USE_KEYSTORAGE_4
 	sp<IKeystoreService> service = interface_cast<IKeystoreService>(binder);
 #else
@@ -659,7 +662,7 @@ std::string unwrapSyntheticPasswordBlob(const std::string& spblob_path, const st
 			if (auth_wait_count == 0 || access("/auth_error", F_OK) == 0) {
 				printf("error during keymaster_auth service\n");
 				/* If you are getting this error, make sure that you have the keymaster_auth service defined in your init scripts, preferrably in init.recovery.{ro.hardware}.rc
-				 * service keystore_auth /sbin/keystore_auth
+				 * service keystore_auth /system/bin/keystore_auth
 				 *     disabled
 				 *     oneshot
 				 *     user system
@@ -804,7 +807,7 @@ std::string unwrapSyntheticPasswordBlob(const std::string& spblob_path, const st
 			if (auth_wait_count == 0 || access("/auth_error", F_OK) == 0) {
 				printf("error during keymaster_auth service\n");
 				/* If you are getting this error, make sure that you have the keymaster_auth service defined in your init scripts, preferrably in init.recovery.{ro.hardware}.rc
-				 * service keystore_auth /sbin/keystore_auth
+				 * service keystore_auth /system/bin/keystore_auth
 				 *     disabled
 				 *     oneshot
 				 *     user system
@@ -1165,15 +1168,15 @@ bool Decrypt_User_Synth_Pass(const userid_t user_id, const std::string& Password
 		printf("e4crypt_unlock_user_key returned fail\n");
 		return Free_Return(retval, weaver_key, &pwd);
 	}
-#ifdef USE_KEYSTORAGE_4
+/*#ifdef USE_KEYSTORAGE_4
 	if (!e4crypt_prepare_user_storage("", user_id, 0, flags)) {
 #else
 	if (!e4crypt_prepare_user_storage(nullptr, user_id, 0, flags)) {
 #endif
 		printf("failed to e4crypt_prepare_user_storage\n");
 		return Free_Return(retval, weaver_key, &pwd);
-	}
-	printf("Decrypted Successfully!\n");
+	}*/
+	printf("User %i Decrypted Successfully!\n", user_id);
 	retval = true;
 	return Free_Return(retval, weaver_key, &pwd);
 }
@@ -1200,7 +1203,9 @@ int Get_Password_Type(const userid_t user_id, std::string& filename) {
 		}
 		if (pwd.password_type == 1) // In Android this means pattern
 			return 2; // In TWRP this means pattern
-		else if (pwd.password_type == 2) // In Android this means PIN or password
+                // In Android <11 type 2 is PIN or password
+                // In Android 11 type 3 is PIN and type 4 is password
+                else if (pwd.password_type > 1)
 			return 1; // In TWRP this means PIN or password
 		return 0; // We'll try the default password
 #else
@@ -1255,15 +1260,15 @@ bool Decrypt_User(const userid_t user_id, const std::string& Password) {
 			printf("e4crypt_unlock_user_key returned fail\n");
 			return false;
 		}
-#ifdef USE_KEYSTORAGE_4
+/*#ifdef USE_KEYSTORAGE_4
 		if (!e4crypt_prepare_user_storage("", user_id, 0, flags)) {
 #else
 		if (!e4crypt_prepare_user_storage(nullptr, user_id, 0, flags)) {
 #endif
 			printf("failed to e4crypt_prepare_user_storage\n");
 			return false;
-		}
-		printf("Decrypted Successfully!\n");
+		}*/
+		printf("User %i Decrypted Successfully!\n", user_id);
 		return true;
 	}
 	if (stat("/data/system_de/0/spblob", &st) == 0) {
@@ -1343,14 +1348,14 @@ bool Decrypt_User(const userid_t user_id, const std::string& Password) {
 		printf("e4crypt_unlock_user_key returned fail\n");
 		return false;
 	}
-#ifdef USE_KEYSTORAGE_4
+/*#ifdef USE_KEYSTORAGE_4
 		if (!e4crypt_prepare_user_storage("", user_id, 0, flags)) {
 #else
 		if (!e4crypt_prepare_user_storage(nullptr, user_id, 0, flags)) {
 #endif
 		printf("failed to e4crypt_prepare_user_storage\n");
 		return false;
-	}
-	printf("Decrypted Successfully!\n");
+	}*/
+	printf("User %i Decrypted Successfully!\n", user_id);
 	return true;
 }

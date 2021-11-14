@@ -32,7 +32,7 @@
 #include <android/hardware/vibrator/1.2/IVibrator.h>
 #endif
 
-#include "../common.h"
+#include "common.h"
 
 #include "minui.h"
 
@@ -139,6 +139,13 @@ int vibrate(int timeout_ms)
     android::sp<android::hardware::vibrator::V1_2::IVibrator> vib = android::hardware::vibrator::V1_2::IVibrator::getService();
     if (vib != nullptr) {
         vib->on((uint32_t)timeout_ms);
+    }
+#elif TW_USE_SAMSUNG_HAPTICS
+    /* Newer Samsung devices have duration file only
+     0 in VIBRATOR_TIMEOUT_FILE means no vibration
+     Anything else is the vibration running for X milliseconds */
+    if (std::ifstream(VIBRATOR_TIMEOUT_FILE).good()) {
+        write_to_file(VIBRATOR_TIMEOUT_FILE, tout);
     }
 #else
     if (std::ifstream(LEDS_HAPTICS_ACTIVATE_FILE).good()) {

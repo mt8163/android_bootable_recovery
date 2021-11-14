@@ -17,9 +17,11 @@
 #ifndef _VARIABLES_HEADER_
 #define _VARIABLES_HEADER_
 
-#define TW_MAIN_VERSION_STR       "3.4.0"
+#define TW_MAIN_VERSION_STR       "3.5.2_10"
 #define TW_VERSION_STR TW_MAIN_VERSION_STR TW_DEVICE_VERSION
-
+#define TW_SETTINGS_FILE            ".twrps"
+#define TW_RECOVERY_NAME            "TWRP"
+#define TW_DEFAULT_RECOVERY_FOLDER  "/" TW_RECOVERY_NAME
 #define TW_USE_COMPRESSION_VAR      "tw_use_compression"
 #define TW_FILENAME                 "tw_filename"
 #define TW_ZIP_INDEX                "tw_zip_index"
@@ -72,12 +74,14 @@
 #define TW_FORCE_DIGEST_CHECK_VAR   "tw_force_digest_check"
 #define TW_SKIP_DIGEST_CHECK_VAR    "tw_skip_digest_check"
 #define TW_SKIP_DIGEST_GENERATE_VAR "tw_skip_digest_generate"
+#define TW_SKIP_DIGEST_CHECK_ZIP_VAR    "tw_skip_digest_check_zip"
 #define TW_SIGNED_ZIP_VERIFY_VAR    "tw_signed_zip_verify"
 #define TW_INSTALL_REBOOT_VAR       "tw_install_reboot"
 #define TW_TIME_ZONE_VAR            "tw_time_zone"
 #define TW_RM_RF_VAR                "tw_rm_rf"
 
 #define TW_BACKUPS_FOLDER_VAR       "tw_backups_folder"
+#define TW_RECOVERY_FOLDER_VAR      "tw_recovery_folder"
 
 #define TW_SDEXT_SIZE               "tw_sdext_size"
 #define TW_SWAP_SIZE                "tw_swap_size"
@@ -131,6 +135,7 @@
 #define TW_MIN_SYSTEM_VAR           "tw_min_system"
 #define TW_DOWNLOAD_MODE            "tw_download_mode"
 #define TW_EDL_MODE                 "tw_edl_mode"
+#define TW_FASTBOOT_MODE            "tw_fastboot_mode"
 #define TW_IS_ENCRYPTED             "tw_is_encrypted"
 #define TW_IS_DECRYPTED             "tw_is_decrypted"
 #define TW_CRYPTO_PWTYPE            "tw_crypto_pwtype"

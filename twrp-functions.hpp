@@ -32,7 +32,6 @@ using namespace std;
 
 #define CACHE_LOGS_DIR "/cache/"		// For devices with a dedicated cache partition
 #define DATA_LOGS_DIR "/data/"			// For devices that do not have a dedicated cache partition
-#define PERSIST_LOGS_DIR "/persist/"	// For devices with neither cache or dedicated data partition
 
 typedef enum
 {
@@ -40,7 +39,7 @@ typedef enum
 	rb_system,
 	rb_recovery,
 	rb_poweroff,
-	rb_bootloader,     // May also be fastboot
+	rb_bootloader,
 	rb_download,
 	rb_edl,
 	rb_fastboot
@@ -62,15 +61,15 @@ public:
 	static string Get_Path(const string& Path);                                 // Trims everything after the last / in the string
 	static string Get_Filename(const string& Path);                             // Trims the path off of a filename
 
-	static int Exec_Cmd(const string& cmd, string &result);                     //execute a command and return the result as a string by reference
-	static int Exec_Cmd(const string& cmd, bool Show_Errors = true);                   //execute a command, displays an error to the GUI if Show_Errors is true, Show_Errors is true by default
+	static int Exec_Cmd(const string& cmd, string &result, bool combine_stderr);     //execute a command and return the result as a string by reference, set combined_stderror to add stderr
+	static int Exec_Cmd(const string& cmd, bool Show_Errors = true);            //execute a command, displays an error to the GUI if Show_Errors is true, Show_Errors is true by default
 	static int Wait_For_Child(pid_t pid, int *status, string Child_Name, bool Show_Errors = true); // Waits for pid to exit and checks exit status, displays an error to the GUI if Show_Errors is true which is the default
 	static int Wait_For_Child_Timeout(pid_t pid, int *status, const string& Child_Name, int timeout); // Waits for a pid to exit until the timeout is hit. If timeout is hit, kill the chilld.
 	static bool Path_Exists(string Path);                                       // Returns true if the path exists
 	static Archive_Type Get_File_Type(string fn);                               // Determines file type, 0 for unknown, 1 for gzip, 2 for OAES encrypted
 	static int Try_Decrypting_File(string fn, string password); // -1 for some error, 0 for failed to decrypt, 1 for decrypted, 3 for decrypted and found gzip format
 	static unsigned long Get_File_Size(const string& Path);                     // Returns the size of a file
-	static std::string Remove_Beginning_Slash(const std::string& path);        // Remove the beginning slash of a path
+	static std::string Remove_Beginning_Slash(const std::string& path);         // Remove the beginning slash of a path
 	static std::string Remove_Trailing_Slashes(const std::string& path, bool leaveLast = false); // Normalizes the path, e.g /data//media/ -> /data/media
 	static void Strip_Quotes(char* &str);                                       // Remove leading & trailing double-quotes from a string
 	static vector<string> split_string(const string &in, char del, bool skip_empty);
@@ -115,10 +114,13 @@ public:
 	static std::string get_log_dir(); // return recovery log storage directory
 	static void check_selinux_support(); // print whether selinux support is enabled to console
 	static bool Is_TWRP_App_In_System(); // Check if the TWRP app is installed in the system partition
+	static void checkforapp();
 	static int Property_Override(string Prop_Name, string Prop_Value); // Override properties (including ro. properties)
 	static bool Get_Encryption_Policy(fscrypt_encryption_policy &policy, std::string path); // return encryption policy for path
 	static bool Set_Encryption_Policy(std::string path, const fscrypt_encryption_policy &policy); // set encryption policy for path
 	static void List_Mounts();
+	static void Clear_Bootloader_Message();
+	static string Check_For_TwrpFolder();
 
 private:
 	static void Copy_Log(string Source, string Destination);

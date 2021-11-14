@@ -26,7 +26,8 @@
 #include "exclude.hpp"
 #include "tw_atomic.hpp"
 #include "progresstracking.hpp"
-#include "fscrypt_policy.h"
+#include "crypto/fscrypt/fscrypt_policy.h"
+#include "twrpApex.hpp"
 
 #define MAX_FSTAB_LINE_LENGTH 2048
 
@@ -74,19 +75,6 @@ struct Flags_Map {
 	std::string File_System;
 	std::string Flags;
 	char* fstab_line;
-};
-
-enum Repack_Type {
-	REPLACE_NONE = 0,
-	REPLACE_RAMDISK = 1,
-	REPLACE_KERNEL = 2,
-};
-
-struct Repack_Options_struct {
-	Repack_Type Type;
-	bool Backup_First;
-	bool Disable_Verity;
-	bool Disable_Force_Encrypt;
 };
 
 enum PartitionManager_Op {                                                    // PartitionManager Restore Mode for Raw_Read_Write()
@@ -160,13 +148,16 @@ public:
 	int Decrypt_Adopted();
 	void Revert_Adopted();
 	void Partition_Post_Processing(bool Display_Error);                       // Apply partition specific settings after fstab processed
-	void Set_Backup_FileName(string fname);                                   // Set Backup_FileName for partition
+	void Set_Backup_FileName(string fname);                                   // Set backup filename for partition
+	std::string Get_Backup_FileName();                                        // Get the backup filename for the partition
 	string Get_Backup_Name();                                                 // Get Backup_Name for partition
 	bool Decrypt_FBE_DE();                                                    // If FBE is present, backup exclusions are set up and DE decrypt is attempted
 	string Get_Mount_Point();												  // Return Mount_Point or directory the current partition is mounted on
 	bool Get_Super_Status();												  // Returns true if partition is a super volume mounted partitions
 	void Set_Can_Be_Backed_Up(bool val);									  // Update whether the partition can be backed up or not
 	void Set_Can_Be_Wiped(bool val);										  // Update whether the partition can be wiped or not
+	std::string Get_Display_Name();                                           // Get the display name in the gui for the partition
+	bool Is_SlotSelect();                                                     // Return whether the partition is a slot partition or not
 
 public:
 	string Current_File_System;                                               // Current file system
@@ -177,6 +168,7 @@ public:
 	string Crypto_Key_Location;                                               // Location of the crypto key used for decrypting encrypted data partitions
 	unsigned int MTP_Storage_ID;
 	string Adopted_GUID;
+	unsigned int Adopted_Mount_Delay;
 
 protected:
 	bool Has_Data_Media;                                                      // Indicates presence of /data/media, may affect wiping and backup methods
@@ -184,7 +176,7 @@ protected:
 	void Set_Block_Device(std::string block_device);						  // Allow super partition setup to change block device
 
 private:
-	bool Process_Fstab_Line(const char *fstab_line, bool Display_Error, std::map<string, Flags_Map> *twrp_flags, bool Sar_Detect); // Processes a fstab line
+	bool Process_Fstab_Line(const char *fstab_line, bool Display_Error, std::map<string, Flags_Map> *twrp_flags); // Processes a fstab line
 	void Setup_Data_Partition(bool Display_Error);                            // Setup data partition after fstab processed
 	void Set_FBE_Status();													  // Set FBE status of partition
 	void Setup_Cache_Partition(bool Display_Error);                           // Setup cache partition after fstab processed
@@ -287,6 +279,9 @@ private:
 	TWExclude backup_exclusions;                                              // Exclusions for file based backups
 	TWExclude wipe_exclusions;                                                // Exclusions for file based wipes (data/media devices only)
 	string Key_Directory;                                                     // Metadata key directory needed for mounting FBE encrypted data partitions using metadata encryption
+	string Original_Path;
+	bool Use_Original_Path;
+
 	struct partition_fs_flags_struct {                                        // This struct is used to store mount flags and options for different file systems for the same partition
 		string File_System;
 		int Mount_Flags;
@@ -303,6 +298,13 @@ friend class GUIAction;
 friend class PageManager;
 };
 
+struct users_struct {
+	std::string userId;
+	std::string userName;
+	int type;
+	bool isDecrypted;
+};
+
 class TWPartitionManager
 {
 public:
@@ -310,7 +312,7 @@ public:
 	~TWPartitionManager() {}
 
 public:
-	int Process_Fstab(string Fstab_Filename, bool Display_Error, bool Sar_Detect);             // Parses the fstab and populates the partitions
+	int Process_Fstab(string Fstab_Filename, bool Display_Error);             // Parses the fstab and populates the partitions
 	int Write_Fstab();                                                        // Creates /etc/fstab file that's used by the command line for mount commands
 	void Decrypt_Data();													  // Decrypt Data if enabled
 	void Output_Partition_Logging();                                          // Outputs partition information to the log
@@ -340,7 +342,8 @@ public:
 	int Repair_By_Path(string Path, bool Display_Error);                      // Repairs a partition based on path
 	int Resize_By_Path(string Path, bool Display_Error);                      // Resizes a partition based on path
 	void Update_System_Details();                                             // Updates fstab, file systems, sizes, etc.
-	int Decrypt_Device(string Password);                                      // Attempt to decrypt any encrypted partitions
+	int Decrypt_Device(string Password, int user_id = 0);                     // Attempt to decrypt any encrypted partitions
+	void Parse_Users();                                                       // Parse FBE users
 	int usb_storage_enable(void);                                             // Enable USB storage mode
 	int usb_storage_disable(void);                                            // Disable USB storage mode
 	void Mount_All_Storage(void);                                             // Mounts all storage locations
@@ -384,15 +387,15 @@ public:
 	void read_uevent();                                                       // Reads uevent data into a buffer
 	void close_uevent();                                                      // Closes the uevent netlink socket
 	void Add_Partition(TWPartition* Part);                                    // Adds a new partition to the Partitions vector
-	bool Prepare_Repack(TWPartition* Part, const std::string& Temp_Folder_Destination, const bool Create_Backup, const std::string& Backup_Name); // Prepares an image for repacking by unpacking it to the temp folder destination
-	bool Prepare_Repack(const std::string& Source_Path, const std::string& Temp_Folder_Destination, const bool Copy_Source, const bool Create_Destination = true); // Prepares an image for repacking by unpacking it to the temp folder destination
-	bool Repack_Images(const std::string& Target_Image, const struct Repack_Options_struct& Repack_Options); // Repacks the boot image with a new kernel or a new ramdisk
     bool Prepare_Super_Volume(TWPartition* twrpPart);					  	  // Prepare logical super partition volume for mounting
 	std::string Get_Super_Partition();										  // Get Super Partition block device path
 	void Setup_Super_Devices();												  // Setup logical dm devices on super partition
 	bool Get_Super_Status();												  // Return whether device has a super partition
 	void Setup_Super_Partition();											  // Setup the super partition for backup and restore
 	bool Recreate_Logs_Dir();                                                 // Recreate TWRP_AB_LOGS_DIR after wipe
+	std::vector<users_struct>* Get_Users_List();                              // Returns pointer to list of users
+	int Set_FDE_Encrypt_Status();                                             // Sets encryption state for FDE devices (ro.crypto.state and ro.crypto.type)
+	void Unlock_Block_Partitions();                                           // Unlock all block devices after update_engine runs
 
 private:
 	void Setup_Settings_Storage_Partition(TWPartition* Part);                 // Sets up settings storage
@@ -411,10 +414,15 @@ private:
 	int mtp_write_fd;
 	pid_t tar_fork_pid;                                                       // PID of twrpTar fork
 	Backup_Method_enum Backup_Method;                                         // Method used for backup
+	std::string original_ramdisk_format;                                      // Ramdisk format of boot partition
+	std::string repacked_ramdisk_format;                                      // Ramdisk format of boot image to repack from
+	void Mark_User_Decrypted(int userID);                                     // Marks given user ID in Users_List as decrypted
+	void Check_Users_Decryption_Status();                                      // Checks to see if all users are decrypted
 
 private:
 	std::vector<TWPartition*> Partitions;                                     // Vector list of all partitions
 	string Active_Slot_Display;                                               // Current Active Slot (A or B) for display purposes
+	std::vector<users_struct> Users_List;                                     // List of FBE users
 };
 
 extern TWPartitionManager PartitionManager;

@@ -376,9 +376,12 @@ protected:
 	int fixabrecoverybootloop(std::string arg);
 #ifdef TW_BOOT_MENU
 	int threadedsleepcounter(std::string arg);
-#endif
-#ifdef TW_BOOT_MENU
-	int threadedsleepcounter(std::string arg);
+	int enableadb(std::string arg);
+	int enablefastboot(std::string arg);
+	int changeterminal(std::string arg);
+	int applycustomtwrpfolder(std::string arg);
+#ifndef TW_EXCLUDE_NANO
+	int editfile(std::string arg);
 #endif
 
 	int simulate;
@@ -616,6 +619,7 @@ protected:
 	std::string mPathVar; // current path displayed, saved in the data manager
 	std::string mPathDefault; // default value for the path if none is set in mPathVar
 	std::string mExtn; // used for filtering the file list, for example, *.zip
+	std::string mPrfx; // used for filtering the file list, for example, Magisk-
 	std::string mVariable; // set when the user selects an item, pull path like /path/to/foo
 	std::string mSortVariable; // data manager variable used to change the sorting of files
 	std::string mSelection; // set when the user selects an item without the full path like selecting /path/to/foo would just be set to foo
@@ -814,6 +818,8 @@ public:
 	virtual size_t GetItemCount();
 	virtual void RenderItem(size_t itemindex, int yPos, bool selected);
 	virtual void NotifySelect(size_t item_selected);
+	bool status();
+	void stop();
 protected:
 	void InitAndResize();
 

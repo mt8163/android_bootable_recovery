@@ -44,6 +44,9 @@ enum class OtaType {
   BRICK,
 };
 
+static constexpr const char* UPDATE_BINARY_NAME = "META-INF/com/google/android/update-binary";
+static constexpr float VERIFICATION_PROGRESS_FRACTION = 0.25;
+
 // Installs the given update package. This function should also wipe the cache partition after a
 // successful installation if |should_wipe_cache| is true or an updater command asks to wipe the
 // cache.

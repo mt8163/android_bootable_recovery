@@ -19,11 +19,11 @@
 		<string name="recovery">Recovery</string>
 		<string name="cache">Cache</string>
 		<string name="data">Data</string>
-		<string name="data_backup">Data (искл. Storage)</string>
-		<string name="sdcard">SDcard</string>
-		<string name="internal">Память устройства</string>
-		<string name="microsd">Micro SDCard</string>
-		<string name="usbotg">USB OTG</string>
+		<string name="data_backup">Data (искл. внутр.память)</string>
+		<string name="sdcard">SD-карта</string>
+		<string name="internal">Внутренняя память</string>
+		<string name="microsd">MicroSD-карта</string>
+		<string name="usbotg">USB-накопитель</string>
 		<string name="android_secure">Android Secure</string>
 		<string name="dalvik">Dalvik/ART Cache</string>
 		<!-- This is a rarely used partition on a Micro SD card for a very old app2sd system -->
@@ -62,10 +62,10 @@
 		<string name="files_btn">Файлы</string>
 		<string name="copy_log_btn">Копировать лог</string>
 		<string name="select_type_hdr">Выбор типа</string>
-		<string name="install_zip_hdr">Установка Zip</string>
-		<string name="install_zip_btn">Установка Zip</string>
-		<string name="install_image_hdr">Установка Img-образа</string>
-		<string name="install_image_btn">Установка Img</string>
+		<string name="install_zip_hdr">Установка ZIP</string>
+		<string name="install_zip_btn">Установка ZIP</string>
+		<string name="install_image_hdr">Установка IMG-образа</string>
+		<string name="install_image_btn">Установка IMG</string>
 		<string name="install_select_file_hdr">Выбор файла</string>
 		<string name="file_selector_folders_hdr">Папки</string>
 		<string name="select_file_from_storage">Текущий накопитель: %tw_storage_display_name% (%tw_storage_free_size% МБ)</string>
@@ -78,11 +78,11 @@
 		<string name="zip_queue_count_s">Файл %tw_zip_queue_count% из 10:</string>
 		<string name="zip_warn1">Эта операция может установить несовместимое ПО на</string>
 		<string name="zip_warn2">ваше устройство и сделать загрузку системы невозможной.</string>
-		<string name="zip_back_cancel">Нажмите назад для отмены установки этого zip.</string>
+		<string name="zip_back_cancel">Нажмите назад для отмены установки этого ZIP.</string>
 		<string name="zip_back_clear">Нажмите назад для очистки очереди.</string>
 		<string name="folder">Папка:</string>
 		<string name="file">Файл:</string>
-		<string name="zip_sig_chk">Проверка подписи Zip</string>
+		<string name="zip_sig_chk">Проверка подписи ZIP</string>
 		<string name="inject_twrp_chk">Интегрировать TWRP после установки</string>
 		<string name="install_reboot_chk">Автоматическая перезагрузка после установки</string>
 		<string name="options_hdr">Опции</string>
@@ -90,10 +90,10 @@
 		<string name="zip_queue">Очередь:</string>
 		<string name="options">Опции:</string>
 		<string name="swipe_confirm">   Подтвердить</string>
-		<string name="zip_add_btn">Добавить ещё Zip</string>
-		<string name="zip_clear_btn">Очистить очередь Zip</string>
-		<string name="install_zip_count_hdr">Установка Zip %tw_zip_index% из %tw_zip_queue_count%</string>
-		<string name="installing_zip_xml">Установка Zip: %tw_file%</string>
+		<string name="zip_add_btn">Добавить ещё ZIP</string>
+		<string name="zip_clear_btn">Очистить очередь ZIP</string>
+		<string name="install_zip_count_hdr">Установка ZIP %tw_zip_index% из %tw_zip_queue_count%</string>
+		<string name="installing_zip_xml">Установка ZIP: %tw_file%</string>
 		<string name="failed">Неудача</string>
 		<string name="successful">Успешно</string>
 		<string name="install_failed">Установка не удалась</string>
@@ -109,7 +109,6 @@
 		<string name="wipe_cache_dalvik_confirm">Очистить Cache &amp; Dalvik?</string>
 		<string name="wipe_dalvik_confirm">Очистить Dalvik?</string>
 		<string name="wiping_cache_dalvik">Очистка Cache &amp; Dalvik...</string>
-		<string name="wiping_dalvik">Очистка Dalvik...</string>
 		<string name="wipe_cache_dalvik_complete">Очистка Cache &amp; Dalvik завершена</string>
 		<string name="wipe_dalvik_complete">Очистка Dalvik завершена</string>
 		<string name="swipe_wipe">Свайп для очистки</string>
@@ -120,13 +119,17 @@
 		<string name="rebooting">Перезагрузка...</string>
 		<string name="swipe_reboot">Свайп для перезагрузки</string>
 		<string name="swipe_reboot_s">   Перезагрузка</string>
-		<string name="reboot_install_app_hdr">Установить TWRP App?</string>
+		<string name="reboot_install_app_hdr">Установить TWRP App</string>
 		<string name="reboot_install_app1">Вы хотите установить официальное приложение TWRP?</string>
 		<string name="reboot_install_app2">Оно позволит вам проверять наличие новой версии TWRP.</string>
 		<string name="reboot_install_app_prompt_install">Предлагать установку TWRP App при его отсутствии</string>
 		<string name="reboot_install_app_system">Установить как системное приложение</string>
 		<string name="reboot_installing_app">Установка TWRP приложения...</string>
 		<string name="swipe_to_install_app">Свайп для установки TWRP App</string>
+		<string name="uninstall_twrp_system_app">Удаление TWRP App из системы</string>
+		<string name="uninstall_twrp_system_app_confirm">Удалить TWRP App из системы?</string>
+		<string name="uninstalling_twrp_system_app">Удаление TWRP App из системы...</string>
+		<string name="uninstall_twrp_system_app_complete">Удаление TWRP App из системы завершено</string>
 		<string name="swipe_flash">Свайп для прошивки</string>
 		<string name="confirm_action">Подтвердить действие</string>
 		<string name="back_cancel">Нажмите назад для отмены.</string>
@@ -138,6 +141,7 @@
 		<string name="factory_reset2">(исключая внутреннее хранилище)</string>
 		<string name="factory_reset3">В большинстве случаев очистка</string>
 		<string name="factory_reset4">этих разделов достаточна.</string>
+		<string name="factory_reset5">(исключая аккаунты и экран блокировки)</string>
 		<string name="factory_resetting">Сброс до заводского состояния...</string>
 		<string name="advanced_wipe_hdr">Выборочная очистка</string>
 		<string name="advanced_wipe_btn">Выборочная очистка</string>
@@ -220,8 +224,9 @@
 		<string name="enc_disabled">выключено - установите пароль для включения</string>
 		<string name="enc_enabled">включено</string>
 		<string name="enable_backup_comp_chk">Использовать сжатие</string>
-		<string name="skip_digest_backup_chk" version="2">Пропустить вычисление контрольных сумм</string>
+		<string name="skip_digest_backup_chk" version="2">Не создавать контрольные суммы</string>
 		<string name="disable_backup_space_chk" version="2">Отключить проверку свободного места</string>
+		<string name="skip_digest_zip_chk">Не проверять контрольные суммы ZIP</string>
 		<string name="current_boot_slot">Текущий слот: %tw_active_slot%</string>
 		<string name="boot_slot_a">Слот A</string>
 		<string name="boot_slot_b">Слот B</string>
@@ -289,7 +294,7 @@
 		<string name="rb_bootloader_btn">Загрузчик</string>
 		<string name="rb_hacked_bl_btn">Hacked BL</string>
 		<string name="rb_download_btn">Режим загрузки</string>
-		<string name="rb_edl_btn">Edl</string>
+		<string name="rb_edl_btn">EDL</string>
 		<string name="turning_off">Выключение...</string>
 		<string name="swipe_power_off">Свайп для выключения</string>
 		<string name="swipe_power_off_s">Выключение</string>
@@ -299,11 +304,11 @@
 		<string name="sys_rop2">чтобы сохранить возможность официальных обновлений.</string>
 		<string name="sys_rop3">При этом система сможет вернуть обратно стоковый</string>
 		<string name="sys_rop4">рекавери, а TWRP не будет предлагать установку root.</string>
-		<string name="sys_rop5">Установка zip или работа adb всё равно смогут изменять</string>
+		<string name="sys_rop5">Установка ZIP или работа ADB всё равно смогут изменять</string>
 		<string name="sys_rop6">системный раздел.</string>
 		<string name="sys_rol1">TWRP может оставить системный раздел неизменным, чтобы сохранить возможность официальных обновлений.</string>
 		<string name="sys_rol2">При этом система сможет вернуть обратно стоковый рекавери, а TWRP не будет предлагать установку root.</string>
-		<string name="sys_rol3">Установка zip или работа adb всё равно смогут изменять системный раздел.</string>
+		<string name="sys_rol3">Установка ZIP или работа ADB всё равно смогут изменять системный раздел.</string>
 		<string name="sys_ro_never_show_chk">Больше не показывать это при загрузке</string>
 		<string name="sys_ro_keep_ro_btn">Только для чтения</string>
 		<string name="swipe_allow_mod">Разрешить изменения</string>
@@ -389,7 +394,7 @@
 		<string name="copy_log_complete" version="2">Копирование лога завершено.</string>
 		<string name="fix_context_btn">Исправить контекст</string>
 		<string name="part_sd_btn">Разметка SD-карты</string>
-		<string name="part_sd_s_btn">Разм-ка SD</string>
+		<string name="part_sd_s_btn">Разметка SD</string>
 		<string name="file_manager_btn">Проводник</string>
 		<string name="language_hdr">Язык</string>
 		<string name="terminal_btn">Терминал</string>
@@ -456,17 +461,19 @@
 		<string name="fm_set_perms_hdr">Установить права</string>
 		<string name="fm_perms">Права:</string>
 		<string name="fm_complete">Операция завершена</string>
+		<string name="fm_open_terminal_btn">Открыть терминал здесь</string>
+		<string name="fm_edit_file">Изменить файл</string>
 		<string name="decrypt_data_hdr">Расшифровать данные</string>
 		<string name="decrypt_data_enter_pass">Введите пароль.</string>
 		<string name="decrypt_data_failed">Пароль неверный, попробуйте снова!</string>
 		<string name="decrypt_data_failed_pattern">Шаблон неверный, попробуйте снова!</string>
 		<string name="decrypt_data_enter_pattern">Введите шаблон.</string>
 		<string name="decrypt_data_trying">Попытка расшифровки</string>
-		<string name="decrypt_data_vold_os_missing">Missing files needed for vold decrypt: {1}</string>
+		<string name="decrypt_data_vold_os_missing">Отсутствуют файлы необходимые для расшифровки vold: {1}</string>
 		<string name="term_hdr">Команда терминала</string>
 		<string name="term_s_hdr">Терминал</string>
-		<string name="term_kill_btn">УБИТЬ</string>
-		<string name="term_sel_folder_hdr">Перейдите к стартовой папке</string>
+		<string name="term_kill_btn">Остановить</string>
+		<string name="term_sel_folder_hdr">Перейдите к начальной папке</string>
 		<string name="adb_sideload_hdr">ADB Sideload</string>
 		<string name="sideload_wipe_dalvik_chk">Очистка Dalvik Cache</string>
 		<string name="sideload_wipe_cache_chk">Очистка Cache</string>
@@ -509,6 +516,19 @@
 		<string name="fix_recovery_loop_complete">Исправление циклической перезагрузки рекавери завершено</string>
 		<string name="fixing_recovery_loop_patch">Патчинг ядра...</string>
 		<string name="fix_recovery_loop_patch_error">Ошибка патчинга ядра.</string>
+		<string name="decrypt_users">Расшифровка пользователей</string>
+		<string name="decrypt_users_selection">Выберите ID пользователя для расшифровки</string>
+		<string name="select_user">Выбор пользователя</string>
+        <string name="backup_storage_undecrypt_warning">В резервную копию не включены некоторые файлы пользователя {1}, потому что пользователь не расшифрован.</string>
+        <string name="decrypting_user_fbe">Попытка расшифровать FBE пользователя {1}...</string>
+		<string name="decrypt_user_success_fbe">Пользователь {1} расшифрован успешно</string>
+		<string name="decrypt_user_fail_fbe">Ошибка расшифровки пользователя {1}</string>
+		<string name="decrypt_data_enter_pass_fbe">Введите пароль пользователя [%tw_crypto_user_id%]</string>
+		<string name="decrypt_data_enter_pattern_fbe">Введите шаблон пользователя [%tw_crypto_user_id%]</string>
+		<string name="multiuser_warning1">Не все пользователи расшифрованы!</string>
+        <string name="multiuser_warning2">Резервное копирование или восстановление могут завершиться неудачно!</string>
+		<string name="multiuser_warning_accept">Всё равно продолжить</string>
+        <string name="multiuser_warning_hdr">Предупреждение о нескольких пользователях</string>
 
 		<!-- Various console messages - these consist of user displayed messages, oftentimes errors -->
 		<string name="no_kernel_selinux">Чтение SELinux-контекста не поддерживается ядром.</string>
@@ -516,8 +536,8 @@
 		<string name="no_selinux">Отсутствует поддержка SELinux (нет libselinux).</string>
 		<string name="mtp_enabled">MTP Включено</string>
 		<string name="mtp_crash">Сбой MTP: MTP не запущен при загрузке.</string>
-		<string name="decrypt_success">Расшифровка выполнена успешно с паролем по умолчанию.</string>
-		<string name="unable_to_decrypt">Невозможно расшифровать с паролем по умолчанию. Возможно потребуется выполнить форматирование Data.</string>
+		<string name="decrypt_success">Расшифровка выполнена успешно с паролём по умолчанию.</string>
+		<string name="unable_to_decrypt">Невозможно расшифровать с паролём по умолчанию. Возможно потребуется выполнить форматирование Data.</string>
 		<string name="generating_digest1" version="2">Вычисление контрольной суммы</string>
 		<!-- Message displayed during a backup if we are generating an Digest, ideally, leave the leading " * " to help align and separate this text from other console text -->
 		<string name="generating_digest2" version="2"> * Вычисление контрольной суммы...</string>
@@ -560,7 +580,7 @@
 		<string name="unable_find_part_path">Не удаётся найти раздел по пути '{1}'</string>
 		<string name="update_part_details">Обновление информации о разделах...</string>
 		<string name="update_part_details_done">...готово</string>
-
+		<string name="wiping_dalvik">Очистка Dalvik...</string>
 		<string name="cleaned">Очищены: {1}...</string>
 		<string name="cache_dalvik_done">-- Очистка директорий Dalvik Cache завершена!</string>
 		<string name="dalvik_done">-- Очистка директорий Dalvik завершена!</string>
@@ -646,12 +666,12 @@
 		<string name="running_command">Запуск команды</string>
 		<string name="sideload">ADB Sideload</string>
 		<string name="start_sideload">Запуск ADB Sideload...</string>
-		<string name="need_new_adb">Вам необходим adb 1.0.32 или новее для выполнения sideload на этом устр-ве.</string>
+		<string name="need_new_adb">Вам необходим ADB 1.0.32 или новее для выполнения sideload на этом устр-ве.</string>
 		<string name="no_pwd">Не предоставлен пароль.</string>
 		<string name="done_ors">Завершено выполнение файла сценария</string>
 		<string name="injecttwrp">Введение TWRP в образ boot...</string>
-		<string name="zip_err">Ошибка при установке zip файла '{1}'</string>
-		<string name="installing_zip">Установка zip файла '{1}'</string>
+		<string name="zip_err">Ошибка при установке ZIP-файла '{1}'</string>
+		<string name="installing_zip">Установка ZIP-файла '{1}'</string>
 		<string name="select_backup_opt">Установка опций резервного копирования:</string>
 		<string name="compression_on">Сжатие включено</string>
 		<string name="digest_off" version="2">Вычисление контрольных сумм выключено</string>
@@ -662,12 +682,12 @@
 		<string name="running_ors">Выполнение OpenRecoveryScript</string>
 		<string name="ors_complete">OpenRecoveryScript выполнен</string>
 		<string name="check_for_digest" version="2">Проверка файлов контрольных сумм...</string>
-		<string name="invalid_zip_format">Неверный формат zip файла!</string>
+		<string name="invalid_zip_format">Неверный формат ZIP-файла!</string>
 		<string name="fail_sysmap">Не удалось отобразить в память файл '{1}'</string>
-		<string name="verify_zip_sig">Проверка подписи zip...</string>
-		<string name="verify_zip_fail">Подпись Zip не прошла проверку!</string>
-		<string name="verify_zip_done">Подпись Zip проверена успешно.</string>
-		<string name="zip_corrupt">Zip-файл повреждён!</string>
+		<string name="verify_zip_sig">Проверка подписи ZIP...</string>
+		<string name="verify_zip_fail">Подпись ZIP не прошла проверку!</string>
+		<string name="verify_zip_done">Подпись ZIP проверена успешно.</string>
+		<string name="zip_corrupt">ZIP-файл повреждён!</string>
 		<string name="no_digest" version="2">Пропуск проверки контрольной суммы: не найден файл контрольной суммы</string>
 		<string name="digest_fail" version="2">Контрольная сумма не соответствует</string>
 		<string name="digest_match" version="2">Контрольная сумма соответствует</string>
@@ -685,18 +705,18 @@
 		<!-- These 2 items are saved in the data manager instead of resource manager, so %llu, etc is correct instead of {1} -->
 		<string name="file_progress">%llu из %llu файлов, %i%%</string>
 		<string name="size_progress">%llu МБ из %llu МБ, %i%%</string>
-		<string name="decrypt_cmd">Попытка расшифровать раздел данных с помощью командной строки.</string>
+		<string name="decrypt_cmd" version="2">Попытка расшифровать раздел данных или пользовательских данных с помощью командной строки.</string>
 		<string name="base_pkg_err">Неудача при загрузке базовых пакетов.</string>
 		<string name="simulating">Имитация действий...</string>
 		<string name="backup_cancel">Резервное копирование отменено</string>
 		<string name="config_twrp">Конфигурирование TWRP...</string>
 		<string name="config_twrp_err">Невозможно сконфигурировать TWRP с этим ядром.</string>
 		<string name="copy_log">recovery.log скопирован в {1}.</string>
-		<string name="max_queue">Максимум zip в очереди достигнут!</string>
-		<string name="min_queue">Минимум zip в очереди достигнут!</string>
+		<string name="max_queue">Максимум ZIP в очереди достигнут!</string>
+		<string name="min_queue">Минимум ZIP в очереди достигнут!</string>
 		<string name="screenshot_saved">Скриншот сохранён в {1}</string>
 		<string name="screenshot_err">Не удалось сделать скриншот!</string>
-		<string name="zip_wipe_cache">Один или более zip запрашивают очистку cache -- Очистка cache...</string>
+		<string name="zip_wipe_cache">Один или более ZIP запрашивают очистку cache -- Очистка cache...</string>
 		<string name="and_sec_wipe_err">Невозможно очистить android secure</string>
 		<string name="dalvik_wipe_err">Не удалось очистить dalvik</string>
 		<string name="auto_gen">(Создать автоматически)</string>
@@ -711,11 +731,35 @@
 		<string name="install_reboot" version="2">Устройство будет перезагружено через %tw_sleep% сек.</string>
 		<string name="adbbackup_error">Ошибка резервного копирования по ADB. Выход...</string>
 		<string name="adbbackup_control_error">Невозможно записать в канал управления ADB.</string>
-		<string name="twrp_adbbu_option">-- эта опция позволяет делать резервное копирование по adb</string>
+		<string name="twrp_adbbu_option">-- эта опция позволяет делать резервное копирование по ADB</string>
 		<string name="partition_not_found">путь: {1} отсутствует в списке разделов.</string>
 		<string name="copy_kernel_log">Kernel Log скопирован в {1}</string>
 		<string name="include_kernel_log">Добавить Kernel Log</string>
 		<string name="sha2_chk">Использовать SHA2 для контрольных сумм (иначе - MD5)</string>
 		<string name="unable_set_boot_slot">Ошибка смены слота загрузки bootloader на {1}</string>
+		<string name="unmount_sys_install">Размонтировать System перед установкой ZIP</string>
+		<string name="unmount_system">Размонтирование System...</string>
+		<string name="unmount_system_err">Ошибка размонтирования System</string>
+		<string name="flash_ab_inactive">Прошивка A/B ZIP в неактивный слот: {1}</string>
+		<string name="flash_ab_reboot">Для прошивки дополнительных ZIP перезагрузите рекавери для переключения на обновлённый слот.</string>
+		<string name="flash_ab_both_slots">Прошить в оба слота</string>
+		<string name="ozip_decrypt_decryption">Начало расшифровки Ozip...</string>
+		<string name="ozip_decrypt_finish">Расшифровка Ozip завершена!</string>
+		<string name="fbe_wipe_msg">ВНИМАНИЕ: {1} очищен. Устройство необходимо перезагрузить в ОС (не в рекавери) для установки начальной политики FBE после очистки.</string>
+		<string name="fastboot_button">Fastboot</string>
+		<string name="enable_adb">Включить ADB</string>
+		<string name="enable_fastboot">Включить Fastboot</string>
+		<string name="fastboot_console_msg">Переход в режим Fastboot...</string>
+		<!-- Android Rescue Party trigger -->
+		<string name="rescue_party0">Обнаружен сбой Android Rescue Party! Возможные решения:</string>
+		<string name="rescue_party1"> 1. Очистить Cache и/или</string>
+		<string name="rescue_party2"> 2. Форматировать Data и/или</string>
+		<string name="rescue_party3"> 3. Заново установить прошивку.</string>
+		<string name="rescue_party4">Проблема: </string>
+		<string name="restore_system_context">Невозможно получить контекст по умолчанию для {1} -- Android может не загрузиться.</string>
+		<string name="change_twrp_folder_btn">Сменить папку TWRP</string>
+		<string name="change_twrp_folder_on_process">Смена папки TWRP</string>
+		<string name="change_twrp_folder_after_process">Папка TWRP изменена на</string>
+		<string name="tw_folder_exists">Папка с таким именем уже существует!</string>
 	</resources>
 </language>

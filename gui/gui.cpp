@@ -654,8 +654,9 @@ static int runPages(const char *page_name, const int stop_on_page_done)
 			gui_changePage("main");
 			break;
 		}
-		if (DataManager::GetIntValue("tw_gui_done") != 0)
+		if (DataManager::GetIntValue("tw_gui_done") != 0) {
 			break;
+		}
 	}
 	if (ors_read_fd > 0)
 		close(ors_read_fd);
@@ -761,6 +762,12 @@ extern "C" int gui_init(void)
 {
 	gr_init();
 	TWFunc::Set_Brightness(DataManager::GetStrValue("tw_brightness"));
+
+#ifdef TW_SCREEN_BLANK_ON_BOOT
+        printf("TW_SCREEN_BLANK_ON_BOOT := true\n");
+        blankTimer.blank();
+        blankTimer.resetTimerAndUnblank();
+#endif
 
 	// load and show splash screen
 	if (PageManager::LoadPackage("splash", TWRES "splash.xml", "splash")) {
