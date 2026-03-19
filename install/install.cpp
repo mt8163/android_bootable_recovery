@@ -540,6 +540,7 @@ static InstallResult TryUpdateBinary(Package* package, bool* wipe_cache,
   }
 
 #ifdef AMONET_SUPPORT
+  amonet_set_ui(ui);
   if (amonet_load_microloader() < 0) {
     log_buffer->push_back(android::base::StringPrintf("error: %d", kUpdateBinaryCommandFailure));
     return INSTALL_ERROR;

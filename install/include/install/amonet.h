@@ -18,10 +18,15 @@
 
 #ifdef AMONET_SUPPORT
 
+class RecoveryUI;
+
+// Set the UI instance used for on-screen print output.  Call once before
+// any other amonet function.
+void amonet_set_ui(RecoveryUI* ui);
+
 // Load microloader from the patched recovery partition into the in-memory
-// microloader_bin buffer.  If the recovery partition has not been patched
-// (i.e. no microloader is embedded), returns 0 and leaves microloader_bin
-// zeroed.  Returns < 0 on hard failure.
+// microloader_bin buffer.  Returns 0 on success or if no microloader is
+// present, < 0 on hard failure.
 int amonet_load_microloader();
 
 // Remove the amonet exploit from the boot partition so a clean boot image
