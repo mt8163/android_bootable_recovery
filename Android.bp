@@ -55,9 +55,15 @@ soong_config_module_type {
     module_type: "cc_defaults",
     config_namespace: "recovery",
     value_variables: ["recovery_api_version"],
+    bool_variables: ["amonet_support"],
     properties: [
         "cflags",
+        "srcs",
     ],
+}
+
+soong_config_bool_variable {
+    name: "amonet_support",
 }
 
 recovery_cc_defaults {

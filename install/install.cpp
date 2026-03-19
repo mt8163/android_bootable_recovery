@@ -15,6 +15,9 @@
  */
 
 #include "install/install.h"
+#ifdef AMONET_SUPPORT
+#include "install/amonet.h"
+#endif
 
 #include <ctype.h>
 #include <errno.h>
@@ -536,6 +539,17 @@ static InstallResult TryUpdateBinary(Package* package, bool* wipe_cache,
     return INSTALL_CORRUPT;
   }
 
+#ifdef AMONET_SUPPORT
+  if (amonet_load_microloader() < 0) {
+    log_buffer->push_back(android::base::StringPrintf("error: %d", kUpdateBinaryCommandFailure));
+    return INSTALL_ERROR;
+  }
+  if (amonet_unpatch_boot() < 0) {
+    log_buffer->push_back(android::base::StringPrintf("error: %d", kUpdateBinaryCommandFailure));
+    return INSTALL_ERROR;
+  }
+#endif
+
   pid_t pid = fork();
   if (pid == -1) {
     PLOG(ERROR) << "Failed to fork update binary";
@@ -648,6 +662,17 @@ static InstallResult TryUpdateBinary(Package* package, bool* wipe_cache,
       return INSTALL_REBOOT_RECOVERY;
     }
   }
+
+#ifdef AMONET_SUPPORT
+  if (amonet_patch_boot() < 0) {
+    log_buffer->push_back(android::base::StringPrintf("error: %d", kUpdateBinaryCommandFailure));
+    return INSTALL_ERROR;
+  }
+  if (amonet_patch_recovery() < 0) {
+    log_buffer->push_back(android::base::StringPrintf("error: %d", kUpdateBinaryCommandFailure));
+    return INSTALL_ERROR;
+  }
+#endif
 
   return INSTALL_SUCCESS;
 }

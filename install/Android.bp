@@ -96,12 +96,24 @@ cc_library_static {
     ],
 }
 
+recovery_cc_defaults {
+    name: "libinstall_amonet_defaults",
+
+    soong_config_variables: {
+        amonet_support: {
+            srcs: ["amonet.cpp"],
+            cflags: ["-DAMONET_SUPPORT"],
+        },
+    },
+}
+
 cc_library_static {
     name: "libinstall",
     recovery_available: true,
 
     defaults: [
         "libinstall_defaults",
+        "libinstall_amonet_defaults",
     ],
 
     srcs: [
